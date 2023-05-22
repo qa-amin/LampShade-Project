@@ -1,4 +1,5 @@
 ﻿using _0_Framework.Domain;
+using Microsoft.AspNetCore.Http;
 using ShopManagement.Domain.ProductAgg;
 
 namespace ShopManagement.Domain.ProductCategoryAgg
@@ -27,8 +28,8 @@ namespace ShopManagement.Domain.ProductCategoryAgg
 		{
 			Name = name;
 			Description = description;
-			Picture = picture;
-			PictureAlt = pictureAlt;
+			//Picture = picture;
+            PictureAlt = pictureAlt;
 			PictureTitle = pictureTitle;
 			KeyWords = keyWords;
 			MetaDescription = metaDescription;
@@ -40,8 +41,8 @@ namespace ShopManagement.Domain.ProductCategoryAgg
 		{
 			Name = name;
 			Description = description;
-			Picture = picture;
-			PictureAlt = pictureAlt;
+			//Picture = picture;
+            PictureAlt = pictureAlt;
 			PictureTitle = pictureTitle;
 			KeyWords = keyWords;
 			MetaDescription = metaDescription;

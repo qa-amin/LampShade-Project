@@ -121,7 +121,7 @@ namespace _1_LampShadeQuery.Query
 
 
 
-                }).AsNoTracking().FirstOrDefault(x => x.Slug == slug);
+                }).FirstOrDefault(x => x.Slug == slug);
 
             
             

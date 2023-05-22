@@ -45,16 +45,17 @@ $(document).ready(function () {
 
     $(document).on("submit",
         'form[data-ajax="true"]',
-        function () {
-            
+        function (e) {
+
+            e.preventDefault();
             var form = $(this);
             const method = form.attr("method").toLocaleLowerCase();
             const url = form.attr("action");
-            const data = form.serializeArray();
+           
             var action = form.attr("data-action");
-            
+            var formData = new FormData(this);
             if (method === "get") {
-                
+                const data = form.serializeArray();
                 $.get(url,
                     data,
                     function (data) {
@@ -66,11 +67,11 @@ $(document).ready(function () {
                 $.ajax({
                     url: url,
                     type: "post",
-                    data: data,
-                    //enctype: "multipart/form-data",
+                    data: formData,
+                    enctype: "multipart/form-data",
                     dataType: "json",
-                    //processData: false,
-                    //contentType: false,
+                    processData: false,
+                    contentType: false,
                     
                     success: function (data) {
                         
@@ -204,15 +205,15 @@ jQuery.validator.addMethod("maxFileSize",
     });
 jQuery.validator.unobtrusive.adapters.addBool("maxFileSize");
 
-//jQuery.validator.addMethod("maxFileSize",
-//    function (value, element, params) {
-//        var size = element.files[0].size;
-//        var maxSize = 3 * 1024 * 1024;
-//        debugger;
-//        if (size > maxSize)
-//            return false;
-//        else {
-//            return true;
-//        }
-//    });
-//jQuery.validator.unobtrusive.adapters.addBool("maxFileSize");
+jQuery.validator.addMethod("maxFileSize",
+    function (value, element, params) {
+        var size = element.files[0].size;
+        var maxSize = 3 * 1024 * 1024;
+        debugger;
+        if (size > maxSize)
+            return false;
+        else {
+            return true;
+        }
+    });
+jQuery.validator.unobtrusive.adapters.addBool("maxFileSize");

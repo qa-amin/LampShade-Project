@@ -1,5 +1,7 @@
+using _0_Framework.Application;
 using DiscountManagement.Infrastructure.Configuration;
 using InventoryManagement.Infrastructure.Configuration;
+using ServiceHost;
 using ShopManagement.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,8 @@ var cs = builder.Configuration.GetConnectionString("LampShapeDb");
 ShopManagementBootstrapper.Config(builder.Services,cs);
 DiscountManagementBootstrapper.Config(builder.Services, cs);
 InventoryManagementBootstrapper.Config(builder.Services, cs);
+
+builder.Services.AddTransient<IFileUploader, FileUploader>();
 
 var app = builder.Build();
 
