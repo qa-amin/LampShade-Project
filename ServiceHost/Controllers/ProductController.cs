@@ -12,9 +12,12 @@ namespace ServiceHost.Controllers
         {
             _productQuery = productQuery;
         }
-
-        public IActionResult Index()
+        [HttpGet]
+        [Route("product/index/{id}")]
+        public IActionResult Index(string id)
         {
+            Product = _productQuery.GetProductDetails(id);
+            ViewBag.Product = Product;
             return View();
         }
     }

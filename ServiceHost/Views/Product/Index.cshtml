@@ -3,9 +3,9 @@
     ViewData["Title"] = "Index";
 }
 @{
-    ViewData["Title"] = Model.Product.Name;
-    ViewData["keywords"] = Model.Product.Keywords;
-    ViewData["metaDescription"] = Model.Product.MetaDescription;
+    ViewData["Title"] = ViewBag.Product.Name;
+    ViewData["keywords"] = ViewBag.Product.Keywords;
+    ViewData["metaDescription"] = ViewBag.Product.MetaDescription;
 }
 
 <div class="breadcrumb-area section-space--half">
@@ -14,15 +14,15 @@
             <div class="col-lg-12">
                 <div class="breadcrumb-wrapper breadcrumb-bg">
                     <div class="breadcrumb-content">
-                        <h1 class="breadcrumb-content__title">@Model.Product.Name</h1>
+                        <h1 class="breadcrumb-content__title">@ViewBag.Product.Name</h1>
                         <ul class="breadcrumb-content__page-map">
                             <li>
                                 <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
                             </li>
                             <li>
-                                <a asp-controller="ProductCategory" asp-action="Index" asp-route-id="@Model.Product.CategorySlug">@Model.Product.Category</a>
+                                <a asp-controller="ProductCategory" asp-action="Index" asp-route-id="@ViewBag.Product.CategorySlug">@ViewBag.Product.Category</a>
                             </li>
-                            <li class="active">@Model.Product.Name</li>
+                            <li class="active">@ViewBag.Product.Name</li>
                         </ul>
                     </div>
                 </div>
@@ -63,15 +63,15 @@
                                                 ]'>
 
                                                 <div class="single-image">
-                                                    <img src="~/ProductPictures/@Model.Product.Picture" class="img-fluid"
-                                                         alt="@Model.Product.Picture">
+                                                    <img src="~/ProductPictures/@ViewBag.Product.Picture" class="img-fluid"
+                                                         alt="@ViewBag.Product.Picture">
                                                 </div>
-                                                @foreach (var picture in Model.Product.Pictures)
+                                                 @foreach (var picture in @ViewBag.Product.Pictures)
                                                 {
-                                                    <div class="single-image">
-                                                        <img src="~/ProductPictures/@picture.Picture" class="img-fluid"
-                                                             alt="@picture.PictureAlt" title="@picture.PictureTitle">
-                                                    </div>
+	                                                <div class="single-image">
+	                                                <img src="~/ProductPictures/@picture.Picture" class="img-fluid"
+	                                                alt="@picture.PictureAlt" title="@picture.PictureTitle">
+	                                                </div>
                                                 }
                                             </div>
                                         </div>
@@ -99,15 +99,15 @@
                                                     {"breakpoint":479, "settings": {"slidesToShow": 2, "arrows": false, "slidesToScroll": 1} }
                                                 ]'>
                                             <div class="single-image">
-                                                <img src="~/ProductPictures/@Model.Product.Picture" class="img-fluid"
-                                                     alt="@Model.Product.Picture">
+                                                <img src="~/ProductPictures/@ViewBag.Product.Picture" class="img-fluid"
+                                                     alt="@ViewBag.Product.Picture">
                                             </div>
-                                            @foreach (var picture in Model.Product.Pictures)
+                                            @foreach (var picture in ViewBag.Product.Pictures)
                                             {
-                                                <div class="single-image">
-                                                    <img src="~/ProductPictures/@picture.Picture" class="img-fluid"
-                                                         alt="@picture.PictureAlt" title="@picture.PictureTitle">
-                                                </div>
+	                                            <div class="single-image">
+	                                            <img src="~/ProductPictures/@picture.Picture" class="img-fluid"
+	                                            alt="@picture.PictureAlt" title="@picture.PictureTitle">
+                                            </div>
                                             }
                                         </div>
                                     </div>
@@ -115,9 +115,9 @@
                                 <div class="col-lg-6">
                                     <div class="single-product-content-description">
                                         <p class="single-info">
-                                            <a asp-page="/ProductCategory" asp-route-id="@Model.Product.CategorySlug">@Model.Product.Category</a>
+                                            <a asp-controller="ProductCategory" asp-action="Index" asp-route-id="@ViewBag.Product.CategorySlug">@ViewBag.Product.Category</a>
                                         </p>
-                                        <h2 class="product-title">@Model.Product.Name</h2>
+                                        <h2 class="product-title">@ViewBag.Product.Name</h2>
                                         <div class="product-rating">
                                             <span class="rating">
                                                 <i class="ion-android-star active"></i>
@@ -133,21 +133,21 @@
                                         </div>
 
                                         <p class="single-grid-product__price" style="direction: rtl">
-                                            @if (Model.Product.HasDiscount)
+                                            @if (ViewBag.Product.HasDiscount)
                                             {
-                                                <span class="main-price discounted">@Model.Product.Price تومان</span>
-                                                <span class="discounted-price">@Model.Product.PriceWithDiscount تومان</span>
+                                                <span class="main-price discounted">@ViewBag.Product.Price تومان</span>
+                                                <span class="discounted-price">ViewBag.Product.PriceWithDiscount تومان</span>
                                             }
                                             else
                                             {
-                                                <span class="main-price">@Model.Product.Price تومان</span>
+                                                <span class="main-price">@ViewBag.Product.Price تومان</span>
                                             }
 
                                         </p>
 
-                                        <p class="single-info">کد محصول: <span class="value">@Model.Product.Code</span> </p>
+                                        <p class="single-info">کد محصول: <span class="value">@ViewBag.Product.Code</span> </p>
                                         <p class="single-info">
-                                            @if (Model.Product.IsInStock)
+                                            @if (ViewBag.Product.IsInStock)
                                             {
                                                 <span class="text-success">موجود در انبار</span>
                                             }
@@ -158,24 +158,24 @@
                                         </p>
 
                                         <p class="product-description">
-                                            @Model.Product.ShortDescription
+                                            @ViewBag.Product.ShortDescription
                                         </p>
-                                        @if (Model.Product.HasDiscount)
+                                        @if (ViewBag.Product.HasDiscount)
                                         {
-                                            <div class="product-countdown" data-countdown="@Model.Product.DiscountExpireDate"></div>
+                                            <div class="product-countdown" data-countdown="@ViewBag.Product.DiscountExpireDate"></div>
                                         }
 
-                                        <div class="product-actions">
-                                            <div class="quantity-selection">
-                                                <label>تعداد</label>
-                                                <input type="number" value="1" min="1" id="productCount">
-                                            </div>
-                                            <div class="product-buttons">
-                                                <a class="cart-btn" onclick="addToCart('@Model.Product.Id', '@Model.Product.Name', '@Model.Product.DoublePrice', '@Model.Product.Picture')">
-                                                    <i class="ion-bag"></i> افزودن به سبد خرید
-                                                </a>
-                                            </div>
+                                        @* <div class="product-actions">
+                                        <div class="quantity-selection">
+                                        <label>تعداد</label>
+                                        <input type="number" value="1" min="1" id="productCount">
                                         </div>
+                                        <div class="product-buttons">
+                                        <a class="cart-btn" onclick="addToCart('ViewBag.Product.Id', 'ViewBag.Product.Name', 'ViewBag.Product.DoublePrice', 'ViewBag.Product.Picture')">
+                                        <i class="ion-bag"></i> افزودن به سبد خرید
+                                        </a>
+                                        </div>
+                                        </div>*@
 
                                         <div class="social-share-buttons mt-20">
                                             <h5>این محصول را به اشتراک بگذارید</h5>
@@ -203,7 +203,7 @@
                                             </ul>
                                         </div>
                                         <p class="single-info mb-0">
-                                            تگ ها: @Model.Product.Keywords
+                                            تگ ها: @ViewBag.Product.Keywords
                                         </p>
                                     </div>
                                 </div>
@@ -219,15 +219,15 @@
                                                 <a class="nav-item nav-link active" id="description-tab"
                                                    data-toggle="tab" href="#product-description" role="tab"
                                                    aria-selected="true">توضیحات</a>
-                                                <a class="nav-item nav-link" id="review-tab" data-toggle="tab"
-                                                   href="#review" role="tab" aria-selected="false">نظرات (@Model.Product.Comments.Count)</a>
+                                                @* <a class="nav-item nav-link" id="review-tab" data-toggle="tab"
+                                                href="#review" role="tab" aria-selected="false">نظرات (ViewBag.Product.Comments.Count)</a>*@
                                             </div>
                                         </nav>
                                         <div class="tab-content" id="nav-tabContent">
                                             <div class="tab-pane fade show active" id="product-description"
                                                  role="tabpanel" aria-labelledby="description-tab">
                                                 <div class="product-description">
-                                                    @Model.Product.Description
+                                                    @ViewBag.Product.Description
                                                 </div>
                                             </div>
                                             <div class="tab-pane fade" id="review" role="tabpanel"
@@ -275,51 +275,51 @@
                                                     <span>(0)</span>
                                                     </div>
                                                     </div>*@
-                                                  @*  @foreach (var comment in Model.Product.Comments)
+                                                    @*  @foreach (var comment in ViewBag.Product.Product.Comments)
                                                     {
-                                                        <div class="ratings-wrapper">
-                                                            <div class="sin-ratings">
-                                                                <div class="rating-author">
-                                                                    <h3>@comment.Name</h3>
-                                                                    <div class="rating-star">
-	                                                                <i class="fa fa-star"></i>
-	                                                                <i class="fa fa-star"></i>
-	                                                                <i class="fa fa-star"></i>
-	                                                                <i class="fa fa-star"></i>
-	                                                                <i class="fa fa-star"></i>
-	                                                                <span>(5)</span>
-	                                                                </div>
-                                                                </div>
-                                                                <p>@comment.Message</p>
-                                                            </div>
-                                                        </div>
+                                                    <div class="ratings-wrapper">
+                                                    <div class="sin-ratings">
+                                                    <div class="rating-author">
+                                                    <h3>@comment.Name</h3>
+                                                    <div class="rating-star">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <span>(5)</span>
+                                                    </div>
+                                                    </div>
+                                                    <p>@comment.Message</p>
+                                                    </div>
+                                                    </div>
                                                     }*@
 
-                                                    <div class="rating-form-wrapper fix">
-                                                        <h3>نظر خود را به ما بگویید</h3>
-                                                        <form method="post">
-                                                            <div class="rating-form row">
-                                                                <div class="col-md-6 col-12 form-group">
-                                                                    <label for="name">نام:</label>
-                                                                    <input id="name" placeholder="مثال: علی علوی" name="name" type="text">
-                                                                </div>
-                                                                <div class="col-md-6 col-12 form-group">
-                                                                    <label for="email">ایمیل:</label>
-                                                                    <input id="email" placeholder="مثال: contact@atriya.com" name="email" type="text">
-                                                                </div>
-                                                                <div class="col-12 form-group">
-                                                                    <label for="your-review">نظر شما:</label>
-                                                                    <textarea name="message" id="message" placeholder="نظر خود را بنویسید ..."></textarea>
-                                                                </div>
-                                                                <input type="hidden" name="ownerRecordId" value="@Model.Product.Id" />
-                                                                @*<input type="hidden" name="type" value="@CommnetManagement.Infrastructure.EFCore.CommentType.Product" />*@
-                                                                <input type="hidden" name="productSlug" value="@Model.Product.Slug" />
-                                                                <div class="col-12">
-                                                                    <input value="ارسال" type="submit">
-                                                                </div>
-                                                            </div>
-                                                        </form>
+                                                    @*<div class="rating-form-wrapper fix">
+                                                    <h3>نظر خود را به ما بگویید</h3>
+                                                    <form method="post">
+                                                    <div class="rating-form row">
+                                                    <div class="col-md-6 col-12 form-group">
+                                                    <label for="name">نام:</label>
+                                                    <input id="name" placeholder="مثال: علی علوی" name="name" type="text">
                                                     </div>
+                                                    <div class="col-md-6 col-12 form-group">
+                                                    <label for="email">ایمیل:</label>
+                                                    <input id="email" placeholder="مثال: contact@atriya.com" name="email" type="text">
+                                                    </div>
+                                                    <div class="col-12 form-group">
+                                                    <label for="your-review">نظر شما:</label>
+                                                    <textarea name="message" id="message" placeholder="نظر خود را بنویسید ..."></textarea>
+                                                    </div>
+                                                    <input type="hidden" name="ownerRecordId" value="ViewBag.Product.Id" />
+                                                    <input type="hidden" name="type" value="@CommnetManagement.Infrastructure.EFCore.CommentType.Product" />
+                                                    <input type="hidden" name="productSlug" value="ViewBag.Product.Slug" />
+                                                    <div class="col-12">
+                                                    <input value="ارسال" type="submit">
+                                                    </div>
+                                                    </div>
+                                                    </form>
+                                                    </div>*@
                                                 </div>
                                             </div>
                                         </div>

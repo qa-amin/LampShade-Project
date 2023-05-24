@@ -12,6 +12,6 @@ namespace _1_LampShadeQuery.Contracts.Product
 
         List<ProductQueryModel> Search(string value);
 
-       // ProductQueryModel GetProductDetails(string slug);
+        ProductQueryModel GetProductDetails(string slug);
     }
 }
