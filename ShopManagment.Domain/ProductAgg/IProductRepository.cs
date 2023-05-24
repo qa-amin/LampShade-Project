@@ -15,5 +15,6 @@ namespace ShopManagement.Domain.ProductAgg
         Product GetDetails(long Id);
 
         List<Product> GetProducts();
+        public Product GetProductWithCategory(long id);
     }
 }
