@@ -27,9 +27,10 @@ namespace ShopManagement.Application
 
 			var Slug = command.Slug.Slugify();
 
-
-			ProductCategory productCategory = new ProductCategory(command.Name, command.Description,
-				"", command.PictureAlt,
+            var picturePath = $"{command.Slug}";
+            var pictureName = _fileUploader.Upload(command.Picture, picturePath);
+            ProductCategory productCategory = new ProductCategory(command.Name, command.Description,
+                pictureName, command.PictureAlt,
 				command.PictureTitle, command.KeyWords, command.MetaDescription, Slug);
 
 			_productCategoryRepository.Create(productCategory);
@@ -58,9 +59,9 @@ namespace ShopManagement.Application
 
 			var Slug = command.Slug.Slugify();
             var picturePath = $"{command.Slug}";
-            var fileName = _fileUploader.Upload(command.Picture, picturePath);
+            var pictureName = _fileUploader.Upload(command.Picture, picturePath);
 			productCategory.Edit(command.Name, command.Description,
-				"", command.PictureAlt,
+                pictureName, command.PictureAlt,
 				command.PictureTitle, command.KeyWords, command.MetaDescription, Slug);
 
 			_productCategoryRepository.SaveChanges();
@@ -125,7 +126,7 @@ namespace ShopManagement.Application
 			 Id = x.Id,
 			 Name = x.Name,
 			 CreationDate = x.CreationDate.ToFarsi(),
-			 //Picture = x.Picture,
+			 Picture = x.Picture,
 			 ProductsCount = 0
 
 		 }).ToList();
@@ -141,7 +142,7 @@ namespace ShopManagement.Application
                 Name = productCategory.Name,
                 Description = productCategory.Description,
                 PictureTitle = productCategory.PictureTitle,
-               // Picture = productCategory.Picture,
+                //Picture = productCategory.Picture,
                 PictureAlt = productCategory.PictureAlt,
                 KeyWords = productCategory.KeyWords,
                 MetaDescription = productCategory.MetaDescription,

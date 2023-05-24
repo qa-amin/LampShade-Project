@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using _0_Framework.Application;
 using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Domain.ProductAgg;
+using ShopManagement.Domain.ProductCategoryAgg;
 
 
 namespace ShopManagement.Application
@@ -13,10 +14,14 @@ namespace ShopManagement.Application
     public class ProductApplication : IProductApplication
     {
         private readonly IProductRepository _productRepository;
+        private readonly IFileUploader _fileUploader;
+        private readonly IProductCategoryRepository _productCategoryRepository;
 
-        public ProductApplication(IProductRepository productRepository)
+        public ProductApplication(IProductRepository productRepository, IFileUploader fileUploader, IProductCategoryRepository productCategoryRepository)
         {
             _productRepository = productRepository;
+            _fileUploader = fileUploader;
+            _productCategoryRepository = productCategoryRepository;
         }
 
         public OperationResult Create(CreateProduct command)
@@ -24,9 +29,13 @@ namespace ShopManagement.Application
             var opration = new OperationResult();
             if(_productRepository.Exists(x => x.Name==command.Name))
                 return opration.Failed(ApplicationMessages.DuplicatedRecord);
+
             var slug = command.Slug.Slugify();
+            var categorySlug = _productCategoryRepository.GetSlugById(command.CategoryId);
+            var path = $"{categorySlug}/{slug}";
+            var picturePath = _fileUploader.Upload(command.Picture, path);
             var product = new Product(command.Name,  command.Code, command.ShortDescription,
-                command.Description, command.Picture, command.PictureAlt, command.PictureTitle, slug,
+                command.Description, picturePath, command.PictureAlt, command.PictureTitle, slug,
                 command.KeyWords, command.MetaDescription, command.CategoryId);
             _productRepository.Create(product);
             _productRepository.SaveChanges();
@@ -46,8 +55,11 @@ namespace ShopManagement.Application
                 return opration.Failed(ApplicationMessages.DuplicatedRecord);
             }
             var slug = command.Slug.Slugify();
+            var categorySlug = _productCategoryRepository.GetSlugById(command.CategoryId);
+            var path = $"{categorySlug}/{slug}";
+            var picturePath = _fileUploader.Upload(command.Picture, path);
             getDetails.Edit(command.Name, command.Code, command.ShortDescription,
-                command.Description, command.Picture, command.PictureAlt, command.PictureTitle, slug,
+                command.Description,picturePath, command.PictureAlt, command.PictureTitle, slug,
                 command.KeyWords, command.MetaDescription, command.CategoryId);
             _productRepository.SaveChanges();
 
@@ -66,7 +78,7 @@ namespace ShopManagement.Application
                 Id = product.Id,
                 PictureTitle = product.PictureTitle,
                 PictureAlt = product.PictureAlt,
-                Picture = product.Picture,
+                //Picture = product.Picture,
                 KeyWords = product.KeyWords,
                 MetaDescription = product.MetaDescription,
                 Slug = product.Slug,
