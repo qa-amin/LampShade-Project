@@ -1,0 +1,106 @@
+﻿@{
+	ViewData["Title"] = "Article";
+}
+@using ShopManagement.Application.Contracts.ProductCategory
+@using ShopManagement.Domain.ProductCategoryAgg
+@model List<BlogManagement.Application.Contracts.Article.ArticleViewModel>
+
+@{
+	
+	ViewData["title"] = "مدیریت مقالات";
+}
+
+<div class="row">
+	<div class="col-sm-12">
+		<h4 class="page-title pull-right">@ViewData["title"]</h4>
+		<p class="pull-left">
+			<a class="btn btn-success btn-lg" data-toggle="ajax-modal" asp-controller="Article" asp-action="Create">ایجاد مقاله جدید</a>
+		</p>
+	</div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">جستجو در مقالات</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-inline" role="form" method="get" asp-area="Administration" asp-controller="Article" asp-action="Index">
+	                <div class="form-group">
+		                <label class="sr-only" name="title"></label>
+                        <input class="form-control" name="title" placeholder="نام گروه مقاله">
+	                </div>
+	                <div class="form-group">
+		                <label class="sr-only" name="categoryId"></label>
+                        <select class="form-control" name="categoryId" asp-items="ViewBag.ArticleCategories">
+			                <option value="0">گروه مقالات...</option>
+		                </select>
+	                </div>
+                    <button type="submit" class="btn btn-success waves-effect waves-light m-l-10">جستجو</button>
+                    <a class="btn btn-primary waves-effect waves-light m-l-10" >مشاهده همه</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="ProductCategoriesDiv">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">لیست مقالات(@Model.Count)</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <table id="datatable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+	                                <th>#</th>
+	                                <th>عکس</th>
+	                                <th>عنوان</th>
+	                                <th>گروه</th>
+	                                <th>توضیحات کوتاه</th>
+	                                <th>تاریخ انتشار</th>
+	                                <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model)
+                            {
+	                            <tr>
+		                            <td>@item.Id</td>
+		                            <td>
+			                            <img src="~/ProductPictures/@item.Picture" style="width: 70px; height: 70px" />
+		                            </td>
+		                            <td>@item.Title</td>
+		                            <td>@item.Category</td>
+		                            <td>@item.ShortDescription</td>
+		                            <td>@item.PublishDate</td>
+		                            <td>
+			                            <a class="btn btn-warning pull-right m-rl-5" asp-controller="Article" asp-action="Edit" asp-route-id="@item.Id">
+				                            <i class="fa fa-edit"></i> ویرایش
+			                            </a>
+		                            </td>
+	                            </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+	<script src="~/AdminTheme/assets/datatables/jquery.dataTables.min.js"></script>
+	<script src="~/AdminTheme/assets/datatables/dataTables.bootstrap.js"></script>
+
+	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#datatable').dataTable();
+        });
+    </script>
+}
