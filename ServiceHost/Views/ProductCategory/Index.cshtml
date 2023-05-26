@@ -78,7 +78,7 @@
                                                                 <span class="sale">-@product.DiscountRate%</span>
                                                             </div>
                                                         }
-                                                        <a asp-controller="Product" asp-action="Index"  asp-route-id="@product.Slug">
+                                                        <a asp-controller="Account" asp-action="Index"  asp-route-id="@product.Slug">
                                                             <img src="~/ProductPictures/@product.Picture" class="img-fluid"
                                                                  alt="@product.PictureAlt" title="@product.PictureTitle">
                                                         </a>
@@ -98,7 +98,7 @@
                                                         </div>
 
                                                         <h2 class="single-grid-product__title">
-                                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Slug">@product.Name</a>
+                                                            <a asp-controller="Account" asp-action="Index" asp-route-id="@product.Slug">@product.Name</a>
                                                         </h2>
                                                         <p class="single-grid-product__price">
                                                             @if (product.HasDiscount)
