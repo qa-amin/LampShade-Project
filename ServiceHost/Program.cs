@@ -1,4 +1,5 @@
 using _0_Framework.Application;
+using AccountManagement.Infrastructure.Configuration;
 using BlogManagement.Infrastructure.Configuration;
 using CommentManagement.Infrastructure.Configuration;
 using DiscountManagement.Infrastructure.Configuration;
@@ -17,8 +18,10 @@ DiscountManagementBootstrapper.Config(builder.Services, cs);
 InventoryManagementBootstrapper.Config(builder.Services, cs);
 BlogManagementBootstrapper.Config(builder.Services, cs);
 CommentManagementBootstrapper.Config(builder.Services, cs);
+AccountManagementBootstrapper.Config(builder.Services, cs);
 
 builder.Services.AddTransient<IFileUploader, FileUploader>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 
@@ -47,3 +50,4 @@ app.MapControllerRoute(
 	pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
