@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_LampShadeQuery.Contracts.Comment;
 
 namespace _1_LampShadeQuery.Contracts.Product
 {
@@ -29,6 +30,7 @@ namespace _1_LampShadeQuery.Contracts.Product
 		public string MetaDescription { get; set; }
 		public bool IsInStock { get; set; }
         public List<ProductPictureQueryModel> Pictures { get; set; }
+        public List<CommentQueryModel> Comments { get; set; }
 
     }
 }

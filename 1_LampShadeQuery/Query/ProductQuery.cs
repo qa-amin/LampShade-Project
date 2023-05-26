@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _0_Framework.Application;
+using _1_LampShadeQuery.Contracts.Comment;
 using _1_LampShadeQuery.Contracts.Product;
 using _1_LampShadeQuery.Contracts.ProductCategory;
+using CommentManagement.Infrastructure.EFCore;
 using DiscountManagement.Infrastructure.EFCore;
 using InventoryManagement.Infrastructure.EFCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +23,14 @@ namespace _1_LampShadeQuery.Query
         private readonly InventoryManagementDbContext _inventoryManagementDbContext;
         private readonly DiscountManagementDbContext _discountManagementDbContext;
 
-        public ProductQuery(ShopManagementDbContext shopManagementDbContext, InventoryManagementDbContext inventoryManagementDbContext, DiscountManagementDbContext discountManagementDbContext)
+        private readonly CommentManagementDbContext _commentManagementDbContext;
+
+        public ProductQuery(ShopManagementDbContext shopManagementDbContext, InventoryManagementDbContext inventoryManagementDbContext, DiscountManagementDbContext discountManagementDbContext, CommentManagementDbContext commentManagementDbContext)
         {
             _shopManagementDbContext = shopManagementDbContext;
             _inventoryManagementDbContext = inventoryManagementDbContext;
             _discountManagementDbContext = discountManagementDbContext;
+            _commentManagementDbContext = commentManagementDbContext;
         }
 
         public List<ProductQueryModel> GetLatestArrivals()
@@ -156,6 +161,9 @@ namespace _1_LampShadeQuery.Query
                 .Include(x => x.ProductPictures)
                 .ToList();
 
+            
+            
+
             var inventories = _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice, x.InStock }).ToList();
 
             var discounts = _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToList();
@@ -215,8 +223,19 @@ namespace _1_LampShadeQuery.Query
 
 
                 }
-
-                return  product;
+            product.Comments = _commentManagementDbContext.Comments
+                .Where(x => !x.IsCanceled)
+                .Where(x => x.IsConfirmed)
+                .Where(x => x.Type == CommentType.Product)
+                .Where(x => x.OwnerRecordId == product.Id)
+                .Select(x => new CommentQueryModel
+                {
+                    Id = x.Id,
+                    Message = x.Message,
+                    Name = x.Name,
+                    CreationDate = x.CreationDate.ToFarsi()
+                }).OrderByDescending(x => x.Id).ToList();
+            return  product;
 
         }
 
