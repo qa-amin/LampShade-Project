@@ -13,14 +13,16 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
     public class AccountController : Controller
     {
         private readonly IAccountApplication _accountApplication;
+        private readonly IRoleApplication _roleApplication;
         
 
         private List<AccountViewModel> _accountViewModels = new List<AccountViewModel>();
 
 
-        public AccountController(IAccountApplication accountApplication)
+        public AccountController(IAccountApplication accountApplication, IRoleApplication roleApplication)
         {
-            _accountApplication = accountApplication;
+	        _accountApplication = accountApplication;
+	        _roleApplication = roleApplication;
         }
 
         [TempData]
@@ -42,9 +44,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
                 Username =username,
                 RoleId = roleId
             };
-            //var accountRole = new SelectList(_accountApplication., "Id", "Name");
-            //ViewBag.AccountRole = accountRole;
-            
+            var accountRole = new SelectList(_roleApplication.List(), "Id", "Name");
+            ViewBag.AccountRole = accountRole;
+
             _accountViewModels = _accountApplication.Search(SearchModel);
             return View(_accountViewModels);
         }
@@ -56,15 +58,8 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
         public IActionResult Create()
         {
             var command = new RegisterAccount();
-            command.Roles = new List<RoleViewModel>
-            {
-	            new RoleViewModel
-	            {
-		            Id = 1,
-		            CreationDate = DateTime.Now.ToFarsi(),
-		            Name = "مدیرسیستم"
-	            }
-            };
+            command.Roles = _roleApplication.List();
+            
            
             return PartialView("_Create", command);
         }
@@ -88,15 +83,7 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
         {
             var editAccount = _accountApplication.GetDetails(Id);
 
-            editAccount.Roles = new List<RoleViewModel>
-			{
-				new RoleViewModel
-				{
-					Id = 1,
-					CreationDate = DateTime.Now.ToFarsi(),
-					Name = "مدیرسیستم"
-				}
-			};
+            editAccount.Roles = _roleApplication.List();
 			return PartialView("_Edit", editAccount);
         }
 
