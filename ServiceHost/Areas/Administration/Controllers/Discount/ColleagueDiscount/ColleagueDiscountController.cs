@@ -1,11 +1,13 @@
 ﻿using DiscountManagement.Application.Contracts.ColleagueDiscount;
 using DiscountManagement.Application.Contracts.CustomerDiscount;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopManagement.Application.Contracts.Product;
 
 namespace ServiceHost.Areas.Administration.Controllers.Discount.ColleagueDiscount
 {
+    [Authorize(Policy = "Administration")]
     public class ColleagueDiscountController : Controller
     {
         private readonly IColleagueDiscountApplication _colleagueDiscountApplication;

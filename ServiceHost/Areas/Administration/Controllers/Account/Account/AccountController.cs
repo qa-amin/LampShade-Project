@@ -1,15 +1,12 @@
-﻿using _0_Framework.Application;
-using AccountManagement.Application.Contracts.Account;
+﻿using AccountManagement.Application.Contracts.Account;
 using AccountManagement.Application.Contracts.Role;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ShopManagement.Application;
-using ShopManagement.Application.Contracts.Product;
-using ShopManagement.Application.Contracts.ProductCategory;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
+namespace ServiceHost.Areas.Administration.Controllers.Account.Account
 {
+    [Authorize(Policy = "Administration")]
     public class AccountController : Controller
     {
         private readonly IAccountApplication _accountApplication;

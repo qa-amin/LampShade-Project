@@ -1,8 +1,10 @@
 ﻿using CommentManagement.Application.Contracts.Comment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ServiceHost.Areas.Administration.Controllers.Comment.Comment
 {
+    [Authorize(Policy = "AdminArea")]
     public class CommentController : Controller
     {
         private readonly ICommentApplication _commentApplication;

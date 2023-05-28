@@ -1,11 +1,13 @@
 ﻿using DiscountManagement.Application.Contracts.CustomerDiscount;
 using InventoryManagement.Application.Contracts.Inventory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopManagement.Application.Contracts.Product;
 
 namespace ServiceHost.Areas.Administration.Controllers.Inventory
 {
+    [Authorize(Policy = "Administration")]
     public class InventoryController : Controller
     {
         private readonly IInventoryApplication _inventoryApplication;

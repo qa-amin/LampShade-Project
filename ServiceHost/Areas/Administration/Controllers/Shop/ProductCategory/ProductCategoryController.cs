@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.CompilerServices;
 using ShopManagement.Application.Contracts.ProductCategory;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductCategory
 {
+    
+    [Authorize(Policy = "Administration")]
+
     public class ProductCategoryController : Controller
     {
         private readonly IProductCategoryApplication _productCategoryApplication;

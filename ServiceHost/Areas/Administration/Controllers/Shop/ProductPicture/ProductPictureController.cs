@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopManagement.Application;
 using ShopManagement.Application.Contracts.Product;
@@ -7,6 +8,7 @@ using ShopManagement.Application.Contracts.ProductPicture;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductPicture
 {
+    [Authorize(Policy = "Administration")]
     public class ProductPictureController : Controller
     {
         private readonly IProductPictureApplication _productPictureApplication;

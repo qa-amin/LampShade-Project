@@ -1,5 +1,6 @@
 ﻿using BlogManagement.Application.Contracts.Article;
 using BlogManagement.Application.Contracts.ArticleCategory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualBasic.CompilerServices;
@@ -9,6 +10,7 @@ using ShopManagement.Application.Contracts.ProductCategory;
 
 namespace ServiceHost.Areas.Administration.Controllers.Article.Articles
 {
+    [Authorize(Policy = "AdminArea")]
     public class ArticleController : Controller
     {
         private readonly IArticleApplication _articleApplication;

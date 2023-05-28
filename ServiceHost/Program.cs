@@ -1,4 +1,5 @@
 using _0_Framework.Application;
+using _0_Framework.Infrastructure;
 using AccountManagement.Infrastructure.Configuration;
 using BlogManagement.Infrastructure.Configuration;
 using CommentManagement.Infrastructure.Configuration;
@@ -39,8 +40,24 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         o.LoginPath = new PathString("/account/login");
         o.LogoutPath = new PathString("/account/login");
-        //o.AccessDeniedPath = new PathString("/AccessDenied");
+        o.AccessDeniedPath = new PathString("/AccessDenied");
     });
+
+    builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminArea",
+        builder => builder.RequireRole(new List<string> { Roles.Administrator, Roles.ContentUploader }));
+
+    options.AddPolicy("Administration",
+        builder => builder.RequireRole(new List<string> { Roles.Administrator }));
+
+    //options.AddPolicy("Discount",
+    //    builder => builder.RequireRole(new List<string> { Roles.Administrator }));
+
+    //options.AddPolicy("Account",
+    //    builder => builder.RequireRole(new List<string> { Roles.Administrator }));
+});
+
 
 var app = builder.Build();
 

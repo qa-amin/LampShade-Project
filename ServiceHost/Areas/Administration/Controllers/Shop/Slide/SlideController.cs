@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopManagement.Application;
 using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Application.Contracts.ProductPicture;
@@ -6,6 +7,7 @@ using ShopManagement.Application.Contracts.Slide;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.Slide
 {
+    [Authorize(Policy = "Administration")]
     public class SlideController : Controller
     {
         private readonly ISlideApplication _slideApplication;

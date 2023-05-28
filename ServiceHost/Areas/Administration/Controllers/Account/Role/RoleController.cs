@@ -1,9 +1,11 @@
 ﻿using AccountManagement.Application.Contracts.Role;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ServiceHost.Areas.Administration.Controllers.Account.Role
 {
+    [Authorize(Policy = "Administration")]
     public class RoleController : Controller
     {
         

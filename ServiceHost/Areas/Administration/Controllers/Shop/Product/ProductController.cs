@@ -1,4 +1,5 @@
 ﻿using _0_Framework.Application;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopManagement.Application;
@@ -7,6 +8,7 @@ using ShopManagement.Application.Contracts.ProductCategory;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
 {
+    [Authorize(Policy = "Administration")]
     public class ProductController : Controller
     {
         private readonly IProductApplication _productApplication;

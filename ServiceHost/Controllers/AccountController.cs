@@ -35,7 +35,7 @@ namespace ServiceHost.Controllers
             };
             var result = _accountApplication.Login(command);
             if (result.IsSucceeded)
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","Home");
 
             ViewBag.LoginMessage = result.Message;
             return RedirectToAction("Index");
@@ -48,7 +48,7 @@ namespace ServiceHost.Controllers
             
             _accountApplication.Logout();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         [Route("account/Register")]
