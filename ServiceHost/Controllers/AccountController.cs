@@ -42,7 +42,7 @@ namespace ServiceHost.Controllers
         }
 
 
-
+        [Route("account/logout")]
         public IActionResult LogOut()
         {
             
@@ -50,5 +50,18 @@ namespace ServiceHost.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [Route("account/Register")]
+        public IActionResult Register(RegisterAccount command)
+        {
+           var result = _accountApplication.Register(command);
+           if (result.IsSucceeded)
+               return RedirectToAction("Login");
+
+           ViewBag.RegisterMessage = result.Message;
+
+           return RedirectToAction("Index");
+        }
+
     }
 }
