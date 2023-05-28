@@ -3,6 +3,8 @@
     Layout = null;
 }
 
+@using _0_Framework.Application
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model _1_LampShadeQuery.Contracts.ProductCategory.ProductCategoryQueryModel
 
 <!--====================  header area ====================-->
@@ -49,7 +51,7 @@
                                 <li>
                                     <a href="contact.html">تماس با ما</a>
                                 </li>
-                               @* @if (AuthHelper.IsAuthenticated())
+                                @*@if (AuthHelper.IsAuthenticated())
                                 {
                                     <li>
                                         <a asp-page="/Account" asp-page-handler="Logout">خروج</a>

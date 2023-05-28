@@ -1,4 +1,5 @@
-﻿using _0_Framework.Infrastructure;
+﻿using _0_Framework.Application;
+using _0_Framework.Infrastructure;
 using AccountManagement.Application.Contracts.Role;
 using AccountManagement.Domain.RoleAgg;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
                 }).AsNoTracking()
                 .FirstOrDefault(x => x.Id == id);
 
-            role.Permissions = role.MappedPermissions.Select(x => x.Code).ToList();
+            //role.Permissions = role.MappedPermissions.Select(x => x.Code).ToList();
 
             return role;
         }
@@ -36,7 +37,7 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
 
         public List<RoleViewModel> List()
         {
-            return _accountContext.Roles.Select(x => new RoleViewModel
+            return _accountManagementDbContext.Roles.Select(x => new RoleViewModel
             {
                 Id = x.Id,
                 Name = x.Name,

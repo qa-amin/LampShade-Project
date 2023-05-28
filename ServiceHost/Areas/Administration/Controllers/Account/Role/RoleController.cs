@@ -1,14 +1,8 @@
-﻿using _0_Framework.Application;
-using AccountManagement.Application.Contracts.Account;
-using AccountManagement.Application.Contracts.Role;
+﻿using AccountManagement.Application.Contracts.Role;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ShopManagement.Application;
-using ShopManagement.Application.Contracts.Product;
-using ShopManagement.Application.Contracts.ProductCategory;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
+namespace ServiceHost.Areas.Administration.Controllers.Account.Role
 {
     public class RoleController : Controller
     {
@@ -37,11 +31,11 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
         [HttpGet]
         public IActionResult Index()
         {
-           
-            var accountRole = new SelectList(_roleApplication.List(), "Id", "Name");
-            ViewBag.AccountRole = accountRole;
+            var roles = _roleApplication.List();
+            //var accountRole = new SelectList(_roleApplication.List(), "Id", "Name");
+            //ViewBag.AccountRole = accountRole;
 
-            return View();
+            return View(roles);
         }
 
 

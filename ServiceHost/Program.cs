@@ -4,6 +4,7 @@ using BlogManagement.Infrastructure.Configuration;
 using CommentManagement.Infrastructure.Configuration;
 using DiscountManagement.Infrastructure.Configuration;
 using InventoryManagement.Infrastructure.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ServiceHost;
 using ShopManagement.Infrastructure.Configuration;
 
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpContextAccessor();
 
 var cs = builder.Configuration.GetConnectionString("LampShapeDb");
 ShopManagementBootstrapper.Config(builder.Services,cs);
@@ -22,6 +25,22 @@ AccountManagementBootstrapper.Config(builder.Services, cs);
 
 builder.Services.AddTransient<IFileUploader, FileUploader>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddTransient<IAuthHelper, AuthHelper>();
+
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>
+    {
+        o.LoginPath = new PathString("/account/login");
+        o.LogoutPath = new PathString("/account/login");
+        //o.AccessDeniedPath = new PathString("/AccessDenied");
+    });
 
 var app = builder.Build();
 
@@ -39,6 +58,8 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseCookiePolicy();
 app.UseStaticFiles();
 
 app.UseRouting();
