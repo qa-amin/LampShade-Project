@@ -106,10 +106,10 @@ namespace AccountManagement.Application
             //    .Select(x => x.Code)
             //    .ToList();
 
-            //var authViewModel = new AuthViewModel(account.Id, account.RoleId, account.Fullname
-            //    , account.Username, account.Mobile, permissions);
+            var authViewModel = new AuthViewModel(account.Id, account.RoleId, account.Fullname
+                , account.Username, account.Mobile);
 
-            //_authHelper.Signin(authViewModel);
+            _authHelper.Signin(authViewModel);
             return operation.Succeeded();
         }
 

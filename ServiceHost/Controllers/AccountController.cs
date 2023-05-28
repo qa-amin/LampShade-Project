@@ -7,29 +7,48 @@ namespace ServiceHost.Controllers
     {
         private readonly IAccountApplication _accountApplication;
 
-        [TempData]
+        
         public string LoginMessage { get; set; }
+        
 
-        [TempData]
+        
         public string RegisterMessage { get; set; }
         public AccountController(IAccountApplication accountApplication)
         {
+            ViewBag.LoginMessage = LoginMessage;
+            ViewBag.RegisterMessage = RegisterMessage;
             _accountApplication = accountApplication;
         }
 
-        public IActionResult Index()
+        [Route("account")]
+		public IActionResult Index()
         {
             return View();
         }
         [Route("account/login")]
-        public IActionResult Login(Login command)
+        public IActionResult Login(string username, string password)
         {
+            var command = new Login
+            {
+                Password = password,
+                Username = username,
+            };
             var result = _accountApplication.Login(command);
             if (result.IsSucceeded)
-                return RedirectToPage("/Index");
+                return RedirectToAction("Index");
 
             ViewBag.LoginMessage = result.Message;
-            return RedirectToPage("/Account");
+            return RedirectToAction("Index");
+        }
+
+
+
+        public IActionResult LogOut()
+        {
+            
+            _accountApplication.Logout();
+
+            return RedirectToAction("Index");
         }
     }
 }

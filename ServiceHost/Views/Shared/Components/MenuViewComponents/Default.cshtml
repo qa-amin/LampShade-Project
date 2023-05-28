@@ -6,6 +6,7 @@
 @using _0_Framework.Application
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model _1_LampShadeQuery.Contracts.ProductCategory.ProductCategoryQueryModel
+@inject _0_Framework.Application.IAuthHelper AuthHelper
 
 <!--====================  header area ====================-->
 
@@ -48,21 +49,22 @@
                                         }*@
                                     </ul>
                                 </li>
-                                <li>
-                                    <a href="contact.html">تماس با ما</a>
-                                </li>
-                                @*@if (AuthHelper.IsAuthenticated())
+	                            <li>
+		                            <a href="contact.html">تماس با ما</a>
+	                            </li>
+	                            
+                                @if (AuthHelper.IsAuthenticated())
                                 {
                                     <li>
-                                        <a asp-page="/Account" asp-page-handler="Logout">خروج</a>
+                                        <a asp-controller="Account" asp-action="LogOut">خروج</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li>
-                                        <a asp-page="/Account">وورد / ثبت نام</a>
+                                        <a asp-controller="Account" asp-action="Index" >وورد / ثبت نام</a>
                                     </li>
-                                }*@
+                                }
                             </ul>
                         </nav>
                     </div>
