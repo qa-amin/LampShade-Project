@@ -17,6 +17,9 @@ using ShopManagement.Infrastructure.EFCore.Repository;
 using ShopManagement.Domain.ProductCategoryAgg;
 using ShopManagement.Domain.ProductPictureAgg;
 using ShopManagement.Domain.SlideAgg;
+using _01_LampshadeQuery.Contracts;
+using ShopManagement.Application.Contracts.Order;
+
 namespace ShopManagement.Infrastructure.Configuration
 {
 	public class ShopManagementBootstrapper
@@ -43,7 +46,8 @@ namespace ShopManagement.Infrastructure.Configuration
             services.AddTransient<ISlideQuery, SlideQuery>();
             services.AddTransient<IProductQuery, ProductQuery>();
 
-
+            services.AddTransient<ICartCalculatorService, CartCalculatorService>();
+            services.AddSingleton<ICartService, CartService>();
 
             services.AddTransient<IPermissionExposer, ShopPermissionExposer>();
             services.AddTransient<IProductCategoryQuery, ProductCategoryQuery>();

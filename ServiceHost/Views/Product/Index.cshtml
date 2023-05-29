@@ -165,17 +165,17 @@
                                             <div class="product-countdown" data-countdown="@ViewBag.Product.DiscountExpireDate"></div>
                                         }
 
-                                        @* <div class="product-actions">
+                                         <div class="product-actions">
                                         <div class="quantity-selection">
                                         <label>تعداد</label>
                                         <input type="number" value="1" min="1" id="productCount">
                                         </div>
                                         <div class="product-buttons">
-                                        <a class="cart-btn" onclick="addToCart('ViewBag.Product.Id', 'ViewBag.Product.Name', 'ViewBag.Product.DoublePrice', 'ViewBag.Product.Picture')">
+                                        <a class="cart-btn" onclick="addToCart('@ViewBag.Product.Id', '@ViewBag.Product.Name', '@ViewBag.Product.DoublePrice', '@ViewBag.Product.Picture')">
                                         <i class="ion-bag"></i> افزودن به سبد خرید
                                         </a>
                                         </div>
-                                        </div>*@
+                                        </div>
 
                                         <div class="social-share-buttons mt-20">
                                             <h5>این محصول را به اشتراک بگذارید</h5>

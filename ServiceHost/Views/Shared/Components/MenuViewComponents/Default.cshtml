@@ -5,7 +5,7 @@
 
 @using _0_Framework.Application
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model _1_LampShadeQuery.Contracts.ProductCategory.ProductCategoryQueryModel
+@model _01_LampshadeQuery.MenuModel
 @inject _0_Framework.Application.IAuthHelper AuthHelper
 
 <!--====================  header area ====================-->
@@ -17,7 +17,7 @@
             <div class="col-lg-12">
                 <div class="header-wrapper d-none d-lg-flex">
                     <div class="logo">
-                        <a asp-page="/Index">
+                        <a asp-controller="Home" asp-action="Index">
                             <img src="~/Theme/assets/img/logo.png" class="img-fluid" alt="">
                         </a>
                     </div>
@@ -25,28 +25,28 @@
                         <nav>
                             <ul>
                                 <li>
-                                    <a asp-page="/Index">صفحه اصلی</a>
+                                    <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
                                 </li>
                                 <li class="menu-item-has-children">
                                     <a>محصولات</a>
                                     <ul class="sub-menu">
-                                      @*  @foreach (var category in Model)
+                                        @foreach (var category in Model.ProductCategories)
                                         {
                                             <li>
-                                                <a asp-page="./ProductCategory" asp-route-id="@category.Slug">@category.Name</a>
+                                                <a asp-controller="ProductCategory" asp-action="Index" asp-route-id="@category.Slug">@category.Name</a>
                                             </li>
-                                        }*@
+                                        }
                                     </ul>
                                 </li>
                                 <li class="menu-item-has-children">
                                     <a>مقالات</a>
                                     <ul class="sub-menu">
-                                       @* @foreach (var category in Model.ArticleCategories)
+                                        @foreach (var category in Model.ArticleCategories)
                                         {
                                             <li>
-                                                <a asp-page="./ArticleCategory" asp-route-id="@category.Slug">@category.Name</a>
+                                                <a asp-controller="ArticleCategory" asp-action="Index" asp-route-id="@category.Slug">@category.Name</a>
                                             </li>
-                                        }*@
+                                        }
                                     </ul>
                                 </li>
 	                            <li>
@@ -85,7 +85,7 @@
                                         <div class="cart-items-wrapper ps-scroll" id="cart_items_wrapper">
                                         </div>
                                         <div class="cart-buttons">
-                                            <a asp-page="/Cart">مشاهده سبد خرید</a>
+                                            <a asp-controller="Cart" asp-action="Index">مشاهده سبد خرید</a>
                                         </div>
                                     </div>
                                 </div>
@@ -106,10 +106,10 @@
                                             <h4 class="title">پروفایل من </h4>
                                             <ul>
                                                 <li>
-                                                    <a asp-page="/Account">ثبت نام</a>
+                                                    <a asp-controller="Account">ثبت نام</a>
                                                 </li>
                                                 <li>
-                                                    <a asp-page="/Account">ورود</a>
+                                                    <a asp-controller="Account">ورود</a>
                                                 </li>
                                             </ul>
                                         </div>
