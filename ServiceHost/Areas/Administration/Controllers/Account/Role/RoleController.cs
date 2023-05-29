@@ -1,7 +1,9 @@
-﻿using AccountManagement.Application.Contracts.Role;
+﻿using _0_Framework.Infrastructure;
+using AccountManagement.Application.Contracts.Role;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ServiceHost.Areas.Administration.Controllers.Account.Role
 {
@@ -10,15 +12,18 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
     {
         
         private readonly IRoleApplication _roleApplication;
-        
 
-        
+        public List<SelectListItem> Permissions = new List<SelectListItem>();
+
+        private readonly IEnumerable<IPermissionExposer> _exposers;
 
 
-        public RoleController(IRoleApplication roleApplication)
+
+
+        public RoleController(IRoleApplication roleApplication, IEnumerable<IPermissionExposer> exposers)
         {
-	        
-	        _roleApplication = roleApplication;
+            _roleApplication = roleApplication;
+            _exposers = exposers;
         }
 
         [TempData]
@@ -49,17 +54,17 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
             var command = new CreateRole();
             
            
-            return PartialView("_Create", command);
+            return View("_Create", command);
         }
 
         [Area("Administration")]
         [Route("admin/account/role/Create")]
         [HttpPost]
-        public JsonResult Create(CreateRole commend)
+        public IActionResult Create(CreateRole commend)
         {
             var result = _roleApplication.Create(commend);
 
-            return new JsonResult(result);
+            return RedirectToAction("Index");
         }
 
 
@@ -69,17 +74,38 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
         [HttpGet]
         public IActionResult Edit(long Id)
         {
-            var editAccount = _roleApplication.GetDetails(Id);
-            return PartialView("_Edit", editAccount);
+            var Command = _roleApplication.GetDetails(Id);
+            foreach (var exposer in _exposers)
+            {
+                var exposedPermissions = exposer.Expose();
+                foreach (var (key, value) in exposedPermissions)
+                {
+                    var group = new SelectListGroup { Name = key };
+                    foreach (var permission in value)
+                    {
+                        var item = new SelectListItem(permission.Name, permission.Code.ToString())
+                        {
+                            Group = group
+                        };
+
+                        if (Command.MappedPermissions.Any(x => x.Code == permission.Code))
+                            item.Selected = true;
+
+                        Permissions.Add(item);
+                    }
+                }
+            }
+            ViewBag.Permissions = Permissions;
+            return View("_Edit", Command);
         }
 
         [Area("Administration")]
         [Route("admin/account/role/Edit")]
 
-        public JsonResult Edit(EditRole commend)
+        public IActionResult Edit(EditRole commend)
         {
             var result = _roleApplication.Edit(commend);
-            return new JsonResult(result);
+            return RedirectToAction("Index");
         }
 
        

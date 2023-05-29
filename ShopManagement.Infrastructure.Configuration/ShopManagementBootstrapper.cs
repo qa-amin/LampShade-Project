@@ -1,4 +1,5 @@
-﻿using _1_LampShadeQuery.Contracts.Product;
+﻿using _0_Framework.Infrastructure;
+using _1_LampShadeQuery.Contracts.Product;
 using _1_LampShadeQuery.Contracts.ProductCategory;
 using _1_LampShadeQuery.Contracts.Slide;
 using _1_LampShadeQuery.Query;
@@ -9,14 +10,13 @@ using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Application.Contracts.ProductCategory;
 using ShopManagement.Application.Contracts.ProductPicture;
 using ShopManagement.Application.Contracts.Slide;
+using ShopManagement.Configuration.Permissions;
 using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Infrastructure.EFCore;
 using ShopManagement.Infrastructure.EFCore.Repository;
 using ShopManagement.Domain.ProductCategoryAgg;
 using ShopManagement.Domain.ProductPictureAgg;
 using ShopManagement.Domain.SlideAgg;
-
-
 namespace ShopManagement.Infrastructure.Configuration
 {
 	public class ShopManagementBootstrapper
@@ -43,6 +43,9 @@ namespace ShopManagement.Infrastructure.Configuration
             services.AddTransient<ISlideQuery, SlideQuery>();
             services.AddTransient<IProductQuery, ProductQuery>();
 
+
+
+            services.AddTransient<IPermissionExposer, ShopPermissionExposer>();
             services.AddTransient<IProductCategoryQuery, ProductCategoryQuery>();
 
         }

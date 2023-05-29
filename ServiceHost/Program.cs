@@ -51,11 +51,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.AddPolicy("Administration",
         builder => builder.RequireRole(new List<string> { Roles.Administrator }));
 
-    //options.AddPolicy("Discount",
-    //    builder => builder.RequireRole(new List<string> { Roles.Administrator }));
-
-    //options.AddPolicy("Account",
-    //    builder => builder.RequireRole(new List<string> { Roles.Administrator }));
+    
 });
 
 
