@@ -10,18 +10,25 @@ namespace ServiceHost.Controllers
         
         public const string CookieName = "cart-items";
         private readonly IProductQuery _productQuery;
+
+        private readonly IHttpContextAccessor _contextAccessor;
         
 
-        public CartController(IProductQuery productQuery, IHttpContextAccessor httpContextAccessor)
+        public CartController(IProductQuery productQuery, IHttpContextAccessor httpContextAccessor, IHttpContextAccessor contextAccessor)
         {
             _productQuery = productQuery;
-            
+            _contextAccessor = contextAccessor;
         }
         [Route("/Cart/index")]
         public IActionResult Index()
         {
             var serializer = new JavaScriptSerializer();
             var value = Request.Cookies[CookieName];
+            if (value == null)
+            {
+                ViewBag.cartItems = new List<CartItem>();
+                return View(new List<CartItem>());
+            }
             var cartItems = serializer.Deserialize<List<CartItem>>(value);
             if (cartItems != null)
             {
@@ -42,10 +49,12 @@ namespace ServiceHost.Controllers
             var cartItems = serializer.Deserialize<List<CartItem>>(value);
             var itemToRemove = cartItems.FirstOrDefault(x => x.Id == id);
             cartItems.Remove(itemToRemove);
+           
             var options = new CookieOptions { Expires = DateTime.Now.AddDays(2) };
+           
             Response.Cookies.Append(CookieName, serializer.Serialize(cartItems), options);
 
-            return new RedirectResult("/cart");
+            return RedirectToAction("Index", "Cart");
         }
 
         public IActionResult GoToCheckOut()

@@ -1,5 +1,6 @@
 ﻿@using _0_Framework.Application
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using ShopManagement.Application.Contracts
 @model ShopManagement.Application.Contracts.Order.Cart
 @{
     ViewData["Title"] = "تایید سبد خرید و پرداخت";
@@ -85,7 +86,7 @@
 
                             <div class="row">
                                 <div class="col-lg-6 col-12 d-flex">
-                                   @* <div class="checkout-payment-method">
+                                    <div class="checkout-payment-method">
                                         <h4>نحوه پرداخت</h4>
                                         @foreach (var method in PaymentMethod.GetList())
                                         {
@@ -95,7 +96,7 @@
                                                 <p data-method="@method.Id" style="display:@(PaymentMethod.GetList().First().Id == method.Id ? "block" : "none")">@method.Description</p>
                                             </div>
                                         }
-                                    </div>*@
+                                    </div>
                                 </div>
                                 <div class="col-lg-6 col-12 d-flex">
                                     <div class="cart-summary">
@@ -106,7 +107,7 @@
                                             <h2>مبلغ قابل پرداخت <span>@Model.PayAmount.ToMoney() تومان</span></h2>
                                         </div>
                                         <div class="cart-summary-button">
-                                            <button asp-page-handler="Pay" class="checkout-btn">پرداخت</button>
+                                            <button asp-area="Administration" asp-controller="Checkout" asp-action="Pay" class="checkout-btn">پرداخت</button>
                                         </div>
                                     </div>
                                 </div>

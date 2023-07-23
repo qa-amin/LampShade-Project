@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShopManagement.Domain.OrderAgg;
 using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Infrastructure.EFCore.Mapping;
 using ShopManagement.Domain.ProductCategoryAgg;
@@ -13,6 +14,7 @@ namespace ShopManagement.Infrastructure.EFCore
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ProductPicture> ProductPictures { get; set; }
 		public DbSet<Slide> Slides { get; set; }
+		public DbSet<Order> Orders { get; set; }
 		public ShopManagementDbContext(DbContextOptions<ShopManagementDbContext> opOptions) : base(opOptions) { }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,6 +23,10 @@ namespace ShopManagement.Infrastructure.EFCore
 
 			modelBuilder.ApplyConfiguration(new ProductCategoryMapping());
             modelBuilder.ApplyConfiguration(new ProductMapping());
+            modelBuilder.ApplyConfiguration(new ProductPictureMapping());
+			modelBuilder.ApplyConfiguration(new SlideMapping());
+			modelBuilder.ApplyConfiguration(new OrderMapping());
+
         }
 	}
 }

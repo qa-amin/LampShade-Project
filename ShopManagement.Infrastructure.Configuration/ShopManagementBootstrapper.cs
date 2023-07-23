@@ -19,6 +19,9 @@ using ShopManagement.Domain.ProductPictureAgg;
 using ShopManagement.Domain.SlideAgg;
 using _01_LampshadeQuery.Contracts;
 using ShopManagement.Application.Contracts.Order;
+using ShopManagement.Domain.OrderAgg;
+using ShopManagement.Domain.Services;
+using ShopManagement.Infrastructure.InventoryAcl;
 
 namespace ShopManagement.Infrastructure.Configuration
 {
@@ -51,6 +54,12 @@ namespace ShopManagement.Infrastructure.Configuration
 
             services.AddTransient<IPermissionExposer, ShopPermissionExposer>();
             services.AddTransient<IProductCategoryQuery, ProductCategoryQuery>();
+
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderApplication, OrderApplication>();
+
+
+            services.AddTransient<IShopInventoryAcl, ShopInventoryAcl>();
 
         }
 	}

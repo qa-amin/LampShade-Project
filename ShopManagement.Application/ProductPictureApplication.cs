@@ -68,7 +68,7 @@ namespace ShopManagement.Application
             var path = $"{product.Category.Slug}/{product.Slug}";
             var pictureName = _fileUploader.Upload(command.Picture, path);
 
-            editProductPicture.Edit(command.Id, pictureName, command.PictureAlt, command.PictureTitle);
+            editProductPicture.Edit(command.ProductId, pictureName, command.PictureAlt, command.PictureTitle);
             _productPictureRepository.SaveChanges();
 
             return opreationResult.Succeeded();

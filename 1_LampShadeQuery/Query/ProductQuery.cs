@@ -255,6 +255,9 @@ namespace _1_LampShadeQuery.Query
 
         public List<CartItem> CheckInventoryStatus(List<CartItem> cartItems)
         {
+            if (cartItems == null)
+                return new List<CartItem>();
+
             var inventory = _inventoryManagementDbContext.Inventory.ToList();
 
             foreach (var cartItem in cartItems.Where(cartItem =>

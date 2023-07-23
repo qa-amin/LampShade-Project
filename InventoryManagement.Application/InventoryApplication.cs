@@ -1,4 +1,5 @@
 ﻿using _0_Framework.Application;
+using AccountManagement.Domain.AccountAgg;
 using InventoryManagement.Application.Contracts.Inventory;
 using InventoryManagement.Domain.InventoryAgg;
 using ShopManagement.Domain.ProductAgg;
@@ -9,11 +10,15 @@ namespace InventoryManagement.Application
     {
         private readonly IInventoryRepository _inventoryRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IAuthHelper _authHelper;
 
-        public InventoryApplication(IInventoryRepository inventoryRepository, IProductRepository productRepository)
+        public InventoryApplication(IInventoryRepository inventoryRepository, IProductRepository productRepository, IAuthHelper authHelper, IAccountRepository accountRepository)
         {
             _inventoryRepository = inventoryRepository;
             _productRepository = productRepository;
+            _authHelper = authHelper;
+            _accountRepository = accountRepository;
         }
 
         public OperationResult Create(CreateInventory command)
@@ -79,7 +84,7 @@ namespace InventoryManagement.Application
             }).ToList();
 
             inventoryViewModelList.ForEach(item =>
-                item.Product = products.FirstOrDefault(x => x.Id == item.Id)?.Name);
+                item.Product = products.FirstOrDefault(x => x.Id == item.ProductId)?.Name);
 
 
             return inventoryViewModelList;
@@ -105,7 +110,7 @@ namespace InventoryManagement.Application
         public OperationResult Reduce(List<DecreaseInventory> command)
         {
             var operationResult = new OperationResult();
-            long operatorId = 1;
+            long operatorId = _authHelper.CurrentAccountId();
             foreach (var item in command)
             {
                 var inventory = _inventoryRepository.GetBy(item.ProductId);
@@ -124,7 +129,7 @@ namespace InventoryManagement.Application
                 return operationResult.Failed(ApplicationMessages.RecordNotFound);
             }
 
-            long operatorId = 1;
+            long operatorId = _authHelper.CurrentAccountId();
             inventory.Reduce(command.Count, operatorId, command.Description,0);
             _inventoryRepository.SaveChanges();
 
@@ -133,6 +138,7 @@ namespace InventoryManagement.Application
 
         public List<InventoryOperationViewModel> GetOperationLog(long inventoryId)
         {
+            var accounts = _accountRepository.Get().Select(x => new { x.Id, x.Fullname }).ToList();
             var inventoryOperations = _inventoryRepository.GetOperationLog(inventoryId);
             var inventoryOperationViewModel = inventoryOperations.Select(x => new InventoryOperationViewModel
             {
@@ -142,11 +148,15 @@ namespace InventoryManagement.Application
                 Description = x.Description,
                 Operation = x.Operation,
                 OperationDate = x.OperationDate.ToFarsi(),
-                Operator = "مدیر سیستم",
                 OperatorId = x.OperatorId,
                 OrderId = x.OrderId
 
             }).OrderByDescending(x => x.Id).ToList();
+
+            foreach (var operation in inventoryOperationViewModel)
+            {
+                operation.Operator = accounts.FirstOrDefault(x => x.Id == operation.OperatorId)?.Fullname;
+            }
 
             return inventoryOperationViewModel;
         }

@@ -6,7 +6,7 @@ using ShopManagement.Application.Contracts.ProductCategory;
 
 namespace ServiceHost.Areas.Administration.Controllers.Article.ArticleCategory
 {
-    [Authorize(Policy = "AdminArea")]
+    [Authorize(Policy = "Administration")]
     public class ArticleCategoryController : Controller
     {
         private readonly IArticleCategoryApplication _articleCategoryApplication;

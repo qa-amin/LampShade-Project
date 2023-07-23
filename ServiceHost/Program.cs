@@ -1,4 +1,4 @@
-using _0_Framework.Application;
+﻿using _0_Framework.Application;
 using _0_Framework.Infrastructure;
 using AccountManagement.Infrastructure.Configuration;
 using BlogManagement.Infrastructure.Configuration;
@@ -8,6 +8,8 @@ using InventoryManagement.Infrastructure.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ServiceHost;
 using ShopManagement.Infrastructure.Configuration;
+using Microsoft.AspNetCore.Http;
+using _0_Framework.Application.ZarinPal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,8 @@ AccountManagementBootstrapper.Config(builder.Services, cs);
 builder.Services.AddTransient<IFileUploader, FileUploader>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddTransient<IAuthHelper, AuthHelper>();
+builder.Services.AddTransient<IZarinPalFactory, ZarinPalFactory>();
+
 
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -46,12 +50,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminArea",
-        builder => builder.RequireRole(new List<string> { Roles.Administrator, Roles.ContentUploader }));
+        builder => builder.RequireRole(new List<string> { Roles.Administrator, Roles.ContentUploader}));
 
     options.AddPolicy("Administration",
         builder => builder.RequireRole(new List<string> { Roles.Administrator }));
+    options.AddPolicy("evrey",
+        builder => builder.RequireRole(new List<string> {Roles.SystemUser, Roles.Administrator, Roles.ContentUploader }));
 
-    
+
 });
 
 
