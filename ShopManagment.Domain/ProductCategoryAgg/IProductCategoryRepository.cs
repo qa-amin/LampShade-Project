@@ -11,7 +11,7 @@ namespace ShopManagement.Domain.ProductCategoryAgg
 
         Task<EditProductCategory> GetDetails(long id);
 		
-		Task<ProductCategoryViewModel> Search(string searchModel);
+		Task<List<ProductCategoryViewModel>> Search(string searchModel);
 
 		Task<string> GetSlugById(long id);
 	}
