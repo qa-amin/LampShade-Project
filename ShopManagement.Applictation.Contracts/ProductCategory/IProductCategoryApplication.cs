@@ -7,8 +7,6 @@ namespace ShopManagement.Application.Contracts.ProductCategory
 	{
 		Task<OperationResult> Create(CreateProductCategory command);
         Task<OperationResult> Edit(EditProductCategory command);
-		Task<ProductCategoryViewModel> Get(long id);
-        Task<List<ProductCategoryViewModel>> Get();
 		Task<List<ProductCategoryViewModel>> Search(ProductCategorySearchModel searchModel);
         Task<EditProductCategory> GetDetails(long id);
         Task<List<ProductCategoryViewModel>> GetProductCategories();
