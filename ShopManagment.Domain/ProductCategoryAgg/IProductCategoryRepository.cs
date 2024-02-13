@@ -1,4 +1,5 @@
 ﻿using _0_Framework.Domain;
+using ShopManagement.Application.Contracts.ProductCategory;
 
 namespace ShopManagement.Domain.ProductCategoryAgg
 {
@@ -6,13 +7,12 @@ namespace ShopManagement.Domain.ProductCategoryAgg
 	{
 
 
-        List<ProductCategory> GetProductCategories();
+        Task<List<ProductCategoryViewModel>> GetProductCategories();
 
-
-        ProductCategory GetDetails(long id);
+        Task<EditProductCategory> GetDetails(long id);
 		
-		List<ProductCategory> Search(string searchModel);
+		Task<ProductCategoryViewModel> Search(string searchModel);
 
-		string GetSlugById(long id);
+		Task<string> GetSlugById(long id);
 	}
 }
