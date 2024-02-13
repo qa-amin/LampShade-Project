@@ -35,7 +35,6 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
             {
                 Description = productCategory.Description,
                 Id = productCategory.Id,
-                Picture = productCategory.Picture,
                 KeyWords = productCategory.KeyWords,
                 MetaDescription = productCategory.MetaDescription,
                 Name = productCategory.MetaDescription,
