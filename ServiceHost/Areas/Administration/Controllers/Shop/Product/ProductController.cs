@@ -1,8 +1,6 @@
-﻿using _0_Framework.Application;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ShopManagement.Application;
 using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Application.Contracts.ProductCategory;
 
@@ -29,9 +27,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
         }
 
         [Area("Administration")]
-        [Route("admin/shop/product/index")]
+        [Route("admin/products")]
         [HttpGet]
-        public IActionResult Index(string? name, string? code, long? categoryId)
+        public async Task<IActionResult> Index(string? name, string? code, long? categoryId)
         {
             var SearchModel = new ProductSearchModel
             {
@@ -39,80 +37,54 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Product
                 Code = code,
                 CategoryId = categoryId
             };
-            var productCategories = new SelectList(_productCategoryApplication.GetProductCategories(), "Id", "Name");
+            var productCategories = new SelectList(await _productCategoryApplication.GetProductCategories(), "Id", "Name");
             ViewBag.ProductCategories = productCategories;
             
-            _productViewModels = _productApplication.Search(SearchModel);
+            _productViewModels = await _productApplication.Search(SearchModel);
             return View(_productViewModels);
         }
 
 
         [Area("Administration")]
-        [Route("admin/shop/product/Create")]
+        [Route("admin/product/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new CreateProduct();
-            command.Categoreis = _productCategoryApplication.GetProductCategories();
+            command.Categoreis = await _productCategoryApplication.GetProductCategories();
            
             return PartialView("_Create", command);
         }
 
         [Area("Administration")]
-        [Route("admin/shop/product/Create")]
+        [Route("admin/product/Create")]
         [HttpPost]
-        public JsonResult Create(CreateProduct commend)
+        public async Task<JsonResult> Create(CreateProduct commend)
         {
-            var result = _productApplication.Create(commend);
-
+            var result = await _productApplication.Create(commend);
             return new JsonResult(result);
         }
 
 
 
         [Area("Administration")]
-        [Route("admin/shop/product/Edit")]
+        [Route("admin/product/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var editProduct = _productApplication.GetDetails(Id);
-            editProduct.Categoreis = _productCategoryApplication.GetProductCategories();
+            var editProduct =await _productApplication.GetDetails(id);
+            editProduct.Categoreis = await _productCategoryApplication.GetProductCategories();
             
             return PartialView("_Edit", editProduct);
         }
 
         [Area("Administration")]
-        [Route("admin/shop/product/Edit")]
+        [Route("admin/product/Edit")]
 
-        public JsonResult Edit(EditProduct commend)
+        public async Task<JsonResult> Edit(EditProduct commend)
         {
-            var result = _productApplication.Edit(commend);
+            var result = await _productApplication.Edit(commend);
             return new JsonResult(result);
         }
-
-        //[Area("Administration")]
-        //[Route("admin/shop/product/InStock")]
-
-        //public IActionResult InStock(long id)
-        //{
-        //   var result =  _productApplication.IsStock(id);
-        //   if (result.IsSucceeded)
-        //       return Redirect("./index");
-           
-        //   Message = result.Message;
-        //   return Redirect("./index");
-        //}
-
-        //[Area("Administration")]
-        //[Route("admin/shop/product/NotInStock")]
-        //public IActionResult NotInStock(long id)
-        //{
-        //    var result = _productApplication.NotInStock(id);
-        //    if (result.IsSucceeded)
-        //        return Redirect("./index");
-
-        //    Message = result.Message;
-        //    return Redirect("./index");
-        //}
     }
 }
