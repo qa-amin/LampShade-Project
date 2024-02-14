@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _0_Framework.Application;
 using _0_Framework.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using ShopManagement.Application.Contracts.Slide;
 using ShopManagement.Domain.SlideAgg;
 
 namespace ShopManagement.Infrastructure.EFCore.Repository
@@ -17,14 +19,35 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
             _context = context;
         }
 
-        public Slide GetDetails(long id)
+        public async Task<EditSlide> GetDetails(long id)
         {
-            return _context.Slides.Find(id);
+            var slide = await _context.Slides.FindAsync(id);
+
+            return new EditSlide()
+            {
+                BtnText = slide.BtnText,
+                Heading = slide.Heading,
+                Title = slide.Title,
+                Text = slide.Text,
+                Id = slide.Id,
+                IsRemoved = slide.IsRemoved,
+                PictureTitle = slide.PictureTitle,
+                PictureAlt = slide.PictureAlt,
+                Link = slide.Link,
+            };
         }
 
-        public List<Slide> GetList()
+        public async Task<List<SlideViewModel>> GetList()
         {
-            return _context.Slides.ToList();
+             return await _context.Slides.Select(x => new SlideViewModel
+            {
+                Id = x.Id,
+                Heading = x.Heading,
+                Picture = x.Picture,
+                Title = x.Title,
+                IsRemoved = x.IsRemoved,
+                CreationDate = x.CreationDate.ToFarsi()
+            }).OrderByDescending(x => x.Id).ToListAsync();
         }
     }
 }
