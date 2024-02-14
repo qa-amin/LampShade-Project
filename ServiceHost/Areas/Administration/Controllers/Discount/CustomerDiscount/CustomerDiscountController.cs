@@ -27,9 +27,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.CustomerDiscount
 
 
         [Area("Administration")]
-        [Route("admin/discount/customerdiscount/index")]
+        [Route("admin/customerdiscounts")]
         [HttpGet]
-        public IActionResult Index(long? productId, string? startDate, string? endDate)
+        public async Task<IActionResult> Index(long? productId, string? startDate, string? endDate)
         {
             var serchModel = new CustomerDiscountSearchModel
             {
@@ -38,9 +38,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.CustomerDiscount
                 ProductId = productId
             };
 
-            _customerDiscountViewModelList = _customerDiscountApplication.search(serchModel);
+            _customerDiscountViewModelList = await _customerDiscountApplication.search(serchModel);
 
-            var products = new SelectList(_productApplication.GetProducts(), "Id", "Name");
+            var products = new SelectList(await _productApplication.GetProducts(), "Id", "Name");
             ViewBag.products = products;
 
             return View(_customerDiscountViewModelList);
@@ -49,22 +49,22 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.CustomerDiscount
 
 
         [Area("Administration")]
-        [Route("admin/discount/customerdiscount/Create")]
+        [Route("admin/customerdiscount/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new DefineCustomerDiscount();
-            command.Products = _productApplication.GetProducts();
+            command.Products = await _productApplication.GetProducts();
 
             return PartialView("_Create", command);
         }
 
         [Area("Administration")]
-        [Route("admin/discount/customerdiscount/Create")]
+        [Route("admin/customerdiscount/Create")]
         [HttpPost]
-        public JsonResult Create(DefineCustomerDiscount commend)
+        public async Task<JsonResult> Create(DefineCustomerDiscount commend)
         {
-            var result = _customerDiscountApplication.Define(commend);
+            var result = await _customerDiscountApplication.Define(commend);
 
             return new JsonResult(result);
         }
@@ -72,22 +72,22 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.CustomerDiscount
 
 
         [Area("Administration")]
-        [Route("admin/discount/customerdiscount/Edit")]
+        [Route("admin/customerdiscount/Edit")]
         [HttpGet]
-        public IActionResult Edit(long id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var editCustomerDiscount = _customerDiscountApplication.GetDetails(id);
-            editCustomerDiscount.Products = _productApplication.GetProducts();
+            var editCustomerDiscount = await _customerDiscountApplication.GetDetails(id);
+            editCustomerDiscount.Products = await _productApplication.GetProducts();
 
             return PartialView("_Edit", editCustomerDiscount);
         }
 
         [Area("Administration")]
-        [Route("admin/discount/customerdiscount/Edit")]
+        [Route("admin/customerdiscount/Edit")]
 
-        public JsonResult Edit(EditCustomerDiscount commend)
+        public async Task<JsonResult> Edit(EditCustomerDiscount commend)
         {
-            var result = _customerDiscountApplication.Edit(commend);
+            var result = await _customerDiscountApplication.Edit(commend);
             return new JsonResult(result);
         }
     }

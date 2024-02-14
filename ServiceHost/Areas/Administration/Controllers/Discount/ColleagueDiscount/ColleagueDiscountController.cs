@@ -1,5 +1,4 @@
 ﻿using DiscountManagement.Application.Contracts.ColleagueDiscount;
-using DiscountManagement.Application.Contracts.CustomerDiscount;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -27,9 +26,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.ColleagueDiscoun
 
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/index")]
+        [Route("admin/colleaguediscount/index")]
         [HttpGet]
-        public IActionResult Index(long? productId)
+        public async Task<IActionResult> Index(long? productId)
         {
             var serchModel = new ColleagueDiscountSearchModel()
             {
@@ -37,9 +36,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.ColleagueDiscoun
                 ProductId = productId
             };
 
-            _customerDiscountViewModelList = _colleagueDiscountApplication.search(serchModel);
+            _customerDiscountViewModelList = await _colleagueDiscountApplication.search(serchModel);
 
-            var products = new SelectList(_productApplication.GetProducts(), "Id", "Name");
+            var products = new SelectList(await _productApplication.GetProducts(), "Id", "Name");
             ViewBag.products = products;
 
             return View(_customerDiscountViewModelList);
@@ -48,22 +47,22 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.ColleagueDiscoun
 
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/Create")]
+        [Route("admin/colleaguediscount/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new DefineColleagueDiscount();
-            command.Products = _productApplication.GetProducts();
+            command.Products = await _productApplication.GetProducts();
 
             return PartialView("_Create", command);
         }
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/Create")]
+        [Route("admin/colleaguediscount/Create")]
         [HttpPost]
-        public JsonResult Create(DefineColleagueDiscount commend)
+        public async Task<JsonResult> Create(DefineColleagueDiscount commend)
         {
-            var result = _colleagueDiscountApplication.Define(commend);
+            var result = await _colleagueDiscountApplication.Define(commend);
 
             return new JsonResult(result);
         }
@@ -71,31 +70,31 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.ColleagueDiscoun
 
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/Edit")]
+        [Route("admin/colleaguediscount/Edit")]
         [HttpGet]
-        public IActionResult Edit(long id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var editColleagueDiscount = _colleagueDiscountApplication.GetDetails(id);
-            editColleagueDiscount.Products = _productApplication.GetProducts();
+            var editColleagueDiscount = await _colleagueDiscountApplication.GetDetails(id);
+            editColleagueDiscount.Products = await _productApplication.GetProducts();
 
             return PartialView("_Edit", editColleagueDiscount);
         }
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/Edit")]
+        [Route("admin/colleaguediscount/Edit")]
 
-        public JsonResult Edit(EditColleagueDiscount commend)
+        public async Task<JsonResult> Edit(EditColleagueDiscount commend)
         {
-            var result = _colleagueDiscountApplication.Edit(commend);
+            var result = await _colleagueDiscountApplication.Edit(commend);
             return new JsonResult(result);
         }
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/Remove")]
+        [Route("admin/colleaguediscount/Remove")]
 
-        public IActionResult Remove(long id)
+        public async Task<IActionResult> Remove(long id)
         {
-            var result = _colleagueDiscountApplication.Remove(id);
+            var result = await _colleagueDiscountApplication.Remove(id);
             if (result.IsSucceeded)
                 return Redirect("./index");
 
@@ -104,10 +103,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Discount.ColleagueDiscoun
         }
 
         [Area("Administration")]
-        [Route("admin/discount/colleaguediscount/Restore")]
-        public IActionResult Restore(long id)
+        [Route("admin/colleaguediscount/Restore")]
+        public async Task<IActionResult> Restore(long id)
         {
-            var result = _colleagueDiscountApplication.Restore(id);
+            var result = await _colleagueDiscountApplication.Restore(id);
             if (result.IsSucceeded)
                 return Redirect("./index");
 
