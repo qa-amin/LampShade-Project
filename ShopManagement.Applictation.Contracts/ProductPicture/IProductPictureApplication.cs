@@ -9,11 +9,11 @@ namespace ShopManagement.Application.Contracts.ProductPicture
 {
     public interface IProductPictureApplication
     {
-        OperationResult Create(CreateProductPicture command);
-        OperationResult Edit(EditProductPicture command);
-        OperationResult Remove(long id);
-        OperationResult Restore(long id);
-        EditProductPicture GetDetails(long id);
-        List<ProductPictureViewModel> Search(ProductPictureSearchModel  searchModel);
+        Task<OperationResult> Create(CreateProductPicture command);
+        Task<OperationResult> Edit(EditProductPicture command);
+        Task<OperationResult> Remove(long id);
+        Task<OperationResult> Restore(long id);
+        Task<EditProductPicture> GetDetails(long id);
+        Task<List<ProductPictureViewModel>> Search(ProductPictureSearchModel  searchModel);
     }
 }
