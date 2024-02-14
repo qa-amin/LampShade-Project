@@ -27,9 +27,9 @@ namespace _1_LampShadeQuery.Query
             _discountManagementDbContext = discountManagementDbContext;
         }
 
-        public List<ProductCategoryQueryModel> GetProductCategories()
+        public async Task<List<ProductCategoryQueryModel>> GetProductCategories()
         {
-            return _shopManagementDbContext.ProductCategories.Select(x => new ProductCategoryQueryModel
+            return await _shopManagementDbContext.ProductCategories.Select(x => new ProductCategoryQueryModel
             {
                 Name = x.Name,
                 Picture = x.Picture,
@@ -37,17 +37,17 @@ namespace _1_LampShadeQuery.Query
                 PictureAlt = x.PictureAlt,
                 Slug = x.Slug,
                 Id = x.Id
-            }).AsNoTracking().ToList();
+            }).AsNoTracking().ToListAsync();
         }
 
-        public List<ProductCategoryQueryModel> GetProductCategoriesWithProducts()
+        public async Task<List<ProductCategoryQueryModel>> GetProductCategoriesWithProducts()
         {
-            var inventories = _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToList();
+            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToListAsync();
 
-            var discounts = _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new {x.ProductId, x.DiscountRate }).ToList();
+            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new {x.ProductId, x.DiscountRate }).ToListAsync();
 
 
-	        var categories =  _shopManagementDbContext.ProductCategories.Include(x => x.Products)
+	        var categories = await _shopManagementDbContext.ProductCategories.Include(x => x.Products)
 		        .ThenInclude(x => x.Category)
 		        .Select(x => new ProductCategoryQueryModel
 		        {
@@ -61,7 +61,7 @@ namespace _1_LampShadeQuery.Query
                     
                     
 
-                }).AsNoTracking().ToList();
+                }).AsNoTracking().ToListAsync();
 
             foreach (var category in categories)
             {
@@ -96,11 +96,11 @@ namespace _1_LampShadeQuery.Query
             return categories;
         }
 
-        public ProductCategoryQueryModel GetProductCategoryWithProductsBy(string slug)
+        public async Task<ProductCategoryQueryModel> GetProductCategoryWithProductsBy(string slug)
         {
-            var inventories = _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToList();
+            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToListAsync();
 
-            var discounts = _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate , x.EndDate}).ToList();
+            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate , x.EndDate}).ToListAsync();
 
 
             var category = _shopManagementDbContext.ProductCategories.Include(x => x.Products)
@@ -158,10 +158,10 @@ namespace _1_LampShadeQuery.Query
             return category;
         }
 
-        private static List<ProductQueryModel> MapProducts(List<Product> products)
+        private static  List<ProductQueryModel> MapProducts(List<Product> products)
         {
 
-	        return products.Select(x => new ProductQueryModel
+	        return  products.Select(x => new ProductQueryModel
 	        {
                 Id = x.Id,
                 Name = x.Name,

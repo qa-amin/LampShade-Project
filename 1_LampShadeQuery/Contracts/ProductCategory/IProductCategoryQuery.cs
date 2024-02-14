@@ -8,9 +8,9 @@ namespace _1_LampShadeQuery.Contracts.ProductCategory
 {
     public interface IProductCategoryQuery
     {
-        List<ProductCategoryQueryModel> GetProductCategories();
-        List<ProductCategoryQueryModel> GetProductCategoriesWithProducts();
+        Task<List<ProductCategoryQueryModel>> GetProductCategories();
+        Task<List<ProductCategoryQueryModel>> GetProductCategoriesWithProducts();
 
-        ProductCategoryQueryModel GetProductCategoryWithProductsBy(string slug);
+        Task<ProductCategoryQueryModel> GetProductCategoryWithProductsBy(string slug);
     }
 }
