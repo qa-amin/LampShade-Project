@@ -14,7 +14,6 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductCategory
 
         private  List<ProductCategoryViewModel> _productCategoryVeiwModels = new List<ProductCategoryViewModel>();
 
-        public ProductCategorySearchModel searchModel;
 
         public ProductCategoryController(IProductCategoryApplication productCategoryApplication)
         {
@@ -24,21 +23,21 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductCategory
 
 
         [Area("Administration")]
-        [Route("admin/shop/productcategory/index")]
+        [Route("admin/productcategory")]
         [HttpGet]
-        public IActionResult Index(string? searchModel)
+        public async Task<IActionResult> Index(string? searchModel)
         {
             var SearchModel = new ProductCategorySearchModel
             {
                 Name = searchModel
             };
-            _productCategoryVeiwModels = _productCategoryApplication.Search(SearchModel);
+            _productCategoryVeiwModels = await _productCategoryApplication.Search(SearchModel);
             return View(_productCategoryVeiwModels);
         }
 
 
         [Area("Administration")]
-        [Route("admin/shop/productcategory/Create")]
+        [Route("admin/productcategory/Create")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -46,31 +45,31 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductCategory
         }
 
         [Area("Administration")]
-        [Route("admin/shop/productcategory/Create")]
+        [Route("admin/productcategory/Create")]
         [HttpPost]
-        public JsonResult Create(CreateProductCategory commend)
+        public async Task<JsonResult> Create(CreateProductCategory commend)
         {
-            var result = _productCategoryApplication.Create(commend);
+            var result = await _productCategoryApplication.Create(commend);
 
             return new JsonResult(result);
         }
 
 
         [Area("Administration")]
-        [Route("admin/shop/productcategory/Edit")]
+        [Route("admin/productcategory/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var editProductCategory = _productCategoryApplication.GetDetails(Id);
+            var editProductCategory = await _productCategoryApplication.GetDetails(id);
             return PartialView("_Edit", editProductCategory);
         }
 
         [Area("Administration")]
-        [Route("admin/shop/productcategory/Edit")]
+        [Route("admin/productcategory/Edit")]
         
-        public JsonResult Edit(EditProductCategory commend)
+        public async Task<JsonResult> Edit(EditProductCategory commend)
         {
-            var result = _productCategoryApplication.Edit(commend);
+            var result = await _productCategoryApplication.Edit(commend);
             return new JsonResult(result);
         }
     }
