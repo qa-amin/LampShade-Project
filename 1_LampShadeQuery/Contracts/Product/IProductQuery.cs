@@ -9,11 +9,11 @@ namespace _1_LampShadeQuery.Contracts.Product
 {
     public interface IProductQuery
     {
-        List<ProductQueryModel> GetLatestArrivals();
+        Task<List<ProductQueryModel>> GetLatestArrivals();
 
-        List<ProductQueryModel> Search(string value);
+        Task<List<ProductQueryModel>> Search(string value);
 
-        ProductQueryModel GetProductDetails(string slug);
-        List<CartItem> CheckInventoryStatus(List<CartItem> cartItems);
+        Task<ProductQueryModel> GetProductDetails(string slug);
+        Task<List<CartItem>> CheckInventoryStatus(List<CartItem> cartItems);
     }
 }

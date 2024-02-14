@@ -34,15 +34,15 @@ namespace _1_LampShadeQuery.Query
             _commentManagementDbContext = commentManagementDbContext;
         }
 
-        public List<ProductQueryModel> GetLatestArrivals()
+        public async Task<List<ProductQueryModel>> GetLatestArrivals()
         {
-            var products = _shopManagementDbContext.Products
+            var products = await _shopManagementDbContext.Products
                 .Include(x =>x.Category)
-                .ToList();
+                .ToListAsync();
 
-            var inventories = _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToList();
+            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToListAsync();
 
-            var discounts = _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate }).ToList();
+            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate }).ToListAsync();
 
             var productQueryModel = products.Select(x => new ProductQueryModel
             {
@@ -88,14 +88,14 @@ namespace _1_LampShadeQuery.Query
 
         }
 
-        public List<ProductQueryModel> Search(string value)
+        public async Task<List<ProductQueryModel>> Search(string value)
         {
-            var inventories = _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToList();
+            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToListAsync();
 
-            var discounts = _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToList();
+            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToListAsync();
 
 
-            var query = _shopManagementDbContext.Products.Include(x => x.Category)
+            var query = await _shopManagementDbContext.Products.Include(x => x.Category)
 
                 .Select(x => new ProductQueryModel()
                 {
@@ -111,12 +111,12 @@ namespace _1_LampShadeQuery.Query
 
 
 
-                }).AsNoTracking();
+                }).AsNoTracking().ToListAsync();
 
 
             if (!string.IsNullOrWhiteSpace(value))
             {
-                query = query.Where(x => x.Name.Contains(value) || x.ShortDescription.Contains(value));
+                query = query.Where(x => x.Name.Contains(value) || x.ShortDescription.Contains(value)).ToList();
             }
 
             var products = query.OrderByDescending(x => x.Id).ToList();
@@ -155,19 +155,19 @@ namespace _1_LampShadeQuery.Query
             return products;
         }
 
-        public ProductQueryModel GetProductDetails(string slug)
+        public async Task<ProductQueryModel> GetProductDetails(string slug)
         {
-            var products = _shopManagementDbContext.Products
+            var products = await _shopManagementDbContext.Products
                 .Include(x => x.Category)
                 .Include(x => x.ProductPictures)
-                .ToList();
+                .ToListAsync();
 
             
             
 
-            var inventories = _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice, x.InStock }).ToList();
+            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice, x.InStock }).ToListAsync();
 
-            var discounts = _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToList();
+            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToListAsync();
 
             var product = products.Select(x => new ProductQueryModel
             {
@@ -225,7 +225,7 @@ namespace _1_LampShadeQuery.Query
 
 
                 }
-            product.Comments = _commentManagementDbContext.Comments
+            product.Comments = await _commentManagementDbContext.Comments
                 .Where(x => !x.IsCanceled)
                 .Where(x => x.IsConfirmed)
                 .Where(x => x.Type == CommentType.Product)
@@ -236,7 +236,7 @@ namespace _1_LampShadeQuery.Query
                     Message = x.Message,
                     Name = x.Name,
                     CreationDate = x.CreationDate.ToFarsi()
-                }).OrderByDescending(x => x.Id).ToList();
+                }).OrderByDescending(x => x.Id).ToListAsync();
             return  product;
 
         }
@@ -253,12 +253,12 @@ namespace _1_LampShadeQuery.Query
             }).Where(x => !x.IsRemoved).ToList();
         }
 
-        public List<CartItem> CheckInventoryStatus(List<CartItem> cartItems)
+        public async Task<List<CartItem>> CheckInventoryStatus(List<CartItem> cartItems)
         {
             if (cartItems == null)
                 return new List<CartItem>();
 
-            var inventory = _inventoryManagementDbContext.Inventory.ToList();
+            var inventory = await _inventoryManagementDbContext.Inventory.ToListAsync();
 
             foreach (var cartItem in cartItems.Where(cartItem =>
                          inventory.Any(x => x.ProductId == cartItem.Id && x.InStock)))
