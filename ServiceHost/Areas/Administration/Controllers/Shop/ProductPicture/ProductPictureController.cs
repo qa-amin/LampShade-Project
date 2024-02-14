@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ShopManagement.Application;
 using ShopManagement.Application.Contracts.Product;
-using ShopManagement.Application.Contracts.ProductCategory;
 using ShopManagement.Application.Contracts.ProductPicture;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductPicture
@@ -26,20 +24,20 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductPicture
         }
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/index")]
+        [Route("admin/productpictures")]
         [HttpGet]
-        public IActionResult Index(long? productId)
+        public async Task<IActionResult> Index(long? productId)
         {
             var productPictureSerchModel = new ProductPictureSearchModel
             {
                 ProductId = productId
             };
 
-            var products = new SelectList(_productApplication.GetProducts(), "Id", "Name");
+            var products = new SelectList(await _productApplication.GetProducts(), "Id", "Name");
             ViewBag.Products = products;
 
 
-            _productsPictureViewModel = _productPictureApplication.Search(productPictureSerchModel);
+            _productsPictureViewModel = await _productPictureApplication.Search(productPictureSerchModel);
 
             return View(_productsPictureViewModel);
         }
@@ -48,23 +46,23 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductPicture
 
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/Create")]
+        [Route("admin/productpicture/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new CreateProductPicture();
 
-            command.Products = _productApplication.GetProducts();
+            command.Products = await _productApplication.GetProducts();
 
             return PartialView("_Create", command);
         }
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/Create")]
+        [Route("admin/productpicture/Create")]
         [HttpPost]
-        public JsonResult Create(CreateProductPicture commend)
+        public async Task<JsonResult> Create(CreateProductPicture commend)
         {
-            var result = _productPictureApplication.Create(commend);
+            var result = await _productPictureApplication.Create(commend);
 
             return new JsonResult(result);
         }
@@ -72,33 +70,33 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductPicture
 
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/Edit")]
+        [Route("admin/productpicture/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            var editProduct = _productPictureApplication.GetDetails(Id);
-            editProduct.Products = _productApplication.GetProducts();
+            var editProduct = await _productPictureApplication.GetDetails(Id);
+            editProduct.Products = await _productApplication.GetProducts();
 
             return PartialView("_Edit", editProduct);
         }
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/Edit")]
+        [Route("admin/productpicture/Edit")]
 
-        public JsonResult Edit(EditProductPicture commend)
+        public async Task<JsonResult> Edit(EditProductPicture commend)
         {
-            var result = _productPictureApplication.Edit(commend);
+            var result = await _productPictureApplication.Edit(commend);
             return new JsonResult(result);
         }
 
 
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/Remove")]
+        [Route("admin/productpicture/Remove")]
 
-        public IActionResult Remove(long id)
+        public async Task<IActionResult> Remove(long id)
         {
-            var result = _productPictureApplication.Remove(id);
+            var result = await _productPictureApplication.Remove(id);
             if (result.IsSucceeded)
                 return Redirect("./index");
 
@@ -107,10 +105,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.ProductPicture
         }
 
         [Area("Administration")]
-        [Route("admin/shop/productpicture/Restore")]
-        public IActionResult Restore(long id)
+        [Route("admin/productpicture/Restore")]
+        public async Task<IActionResult> Restore(long id)
         {
-            var result = _productPictureApplication.Restore(id);
+            var result = await _productPictureApplication.Restore(id);
             if (result.IsSucceeded)
                 return Redirect("./index");
 
