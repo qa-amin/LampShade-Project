@@ -11,11 +11,11 @@ namespace ShopManagement.Application.Contracts.Slide
     public interface ISlideApplication
     {
 
-        OperationResult Create(CreateSlide command);
-        OperationResult Edit(EditSlide command);
-        OperationResult Remove(long id);
-        OperationResult Restore(long id);
-        EditSlide GetDetails(long id);
-        List<SlideViewModel> GetList();
+        Task<OperationResult> Create(CreateSlide command);
+        Task<OperationResult> Edit(EditSlide command);
+        Task<OperationResult> Remove(long id);
+        Task<OperationResult> Restore(long id);
+        Task<EditSlide> GetDetails(long id);
+        Task<List<SlideViewModel>> GetList();
     }
 }
