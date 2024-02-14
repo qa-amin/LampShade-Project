@@ -17,15 +17,15 @@ namespace ServiceHost.Controllers
             _commentApplication = commentApplication;
         }
         [HttpGet]
-        [Route("product/index/{id}")]
-        public IActionResult Index(string id)
+        [Route("product/{id}")]
+        public async Task<IActionResult> Index(string id)
         {
-            Product = _productQuery.GetProductDetails(id);
+            Product = await _productQuery.GetProductDetails(id);
             ViewBag.Product = Product;
             return View();
         }
         [HttpPost]
-        [Route("product/Create")]
+        [Route("product/add-comment")]
         public IActionResult Create(AddComment command, string productSlug)
         {
             command.Type = CommentType.Product;
