@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using _0_Framework.Application;
-using ShopManagement.Application.Contracts.Product;
+﻿using _0_Framework.Application;
 using ShopManagement.Application.Contracts.ProductPicture;
 using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Domain.ProductPictureAgg;
@@ -24,118 +18,82 @@ namespace ShopManagement.Application
             _fileUploader = fileUploader;
         }
 
-        public OperationResult Create(CreateProductPicture command)
+        public async Task<OperationResult> Create(CreateProductPicture command)
         {
             var opreationResult = new OperationResult();
 
-
-
-            //if (_productPictureRepository.Exists(x => x.Picture == command.Picture && x.ProductId == command.ProductId))
-            //{
-            //    return opreationResult.Failed(ApplicationMessages.DuplicatedRecord);
-            //}
-
-            var product = _productRepository.GetProductWithCategory(command.ProductId);
+            var product = await _productRepository.Get(command.ProductId);
 
             var path = $"{product.Category.Slug}/{product.Slug}";
            var pictureName =  _fileUploader.Upload(command.Picture, path);
 
             var productPicture = new ProductPicture(command.ProductId, pictureName, command.PictureTitle, command.PictureAlt);
 
-            _productPictureRepository.Create(productPicture);
+            await _productPictureRepository.Create(productPicture);
 
-            _productPictureRepository.SaveChanges();
+            await _productPictureRepository.SaveChanges();
 
             return opreationResult.Succeeded();
         }
 
-        public OperationResult Edit(EditProductPicture command)
+        public async Task<OperationResult> Edit(EditProductPicture command)
         {
             var opreationResult = new OperationResult();
 
-            //if (_productPictureRepository.Exists(x => x.Picture == command.Picture && x.ProductId == command.ProductId && x.Id != command.Id))
-            //{
-            //    return opreationResult.Failed(ApplicationMessages.DuplicatedRecord);
-            //}
-
-            var editProductPicture = _productPictureRepository.GetDetails(command.Id);
+            var editProductPicture = await _productPictureRepository.Get(command.Id);
             if (editProductPicture == null)
             {
                 return opreationResult.Failed(ApplicationMessages.RecordNotFound);
             }
-            var product = _productRepository.GetProductWithCategory(command.ProductId);
+            var product = await _productRepository.Get(command.ProductId);
 
             var path = $"{product.Category.Slug}/{product.Slug}";
             var pictureName = _fileUploader.Upload(command.Picture, path);
 
             editProductPicture.Edit(command.ProductId, pictureName, command.PictureAlt, command.PictureTitle);
-            _productPictureRepository.SaveChanges();
+            await _productPictureRepository.SaveChanges();
 
             return opreationResult.Succeeded();
         }
 
-        public OperationResult Remove(long id)
+        public async Task<OperationResult> Remove(long id)
         {
             var operationResult = new OperationResult();
 
-            var productPicture = _productPictureRepository.Get(id);
+            var productPicture = await _productPictureRepository.Get(id);
 
             if(productPicture == null)
                 return operationResult.Failed(ApplicationMessages.RecordNotFound);
 
 
             productPicture.Remove();
-            _productPictureRepository.SaveChanges();
+            await _productPictureRepository.SaveChanges();
             return operationResult.Succeeded();
         }
 
-        public OperationResult Restore(long id)
+        public async Task<OperationResult> Restore(long id)
         {
             var operationResult = new OperationResult();
 
-            var productPicture = _productPictureRepository.Get(id);
+            var productPicture = await _productPictureRepository.Get(id);
 
             if (productPicture == null)
                 return operationResult.Failed(ApplicationMessages.RecordNotFound);
 
 
             productPicture.Restore();
-            _productPictureRepository.SaveChanges();
+            await _productPictureRepository.SaveChanges();
             return operationResult.Succeeded();
         }
 
-        public EditProductPicture GetDetails(long id)
+        public async Task<EditProductPicture> GetDetails(long id)
         {
-            var productPicture = _productPictureRepository.GetDetails(id);
-
-            var editProductPicture = new EditProductPicture
-            {
-                Id = productPicture.Id,
-               //Picture = productPicture.Picture,
-                PictureAlt = productPicture.PictureAlt,
-                PictureTitle = productPicture.PictureTitle,
-                ProductId = productPicture.ProductId,
-
-            };
-
-            return editProductPicture;
+            return await _productPictureRepository.GetDetails(id);
         }
 
-        public List<ProductPictureViewModel> Search(ProductPictureSearchModel searchModel)
+        public async Task<List<ProductPictureViewModel>> Search(ProductPictureSearchModel searchModel)
         {
-            var listProductPicture = _productPictureRepository.search(searchModel.ProductId);
-            var listProdutPictureViewModel = listProductPicture.Select(x => new ProductPictureViewModel
-            {
-                Id = x.Id,
-                Picture = x.Picture,
-                CreationDate = x.CreationDate.ToFarsi(),
-                Product = x.Product.Name,
-                ProductId = x.ProductId,
-                IsRemoved = x.IsRemove
-                
-            }).ToList();
-
-            return listProdutPictureViewModel;
+            return await _productPictureRepository.search(searchModel.ProductId);
         }
     }
 
