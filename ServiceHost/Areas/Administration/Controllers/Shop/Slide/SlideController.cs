@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShopManagement.Application;
-using ShopManagement.Application.Contracts.Product;
-using ShopManagement.Application.Contracts.ProductPicture;
+using Nancy.Json;
 using ShopManagement.Application.Contracts.Slide;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.Slide
@@ -21,19 +19,19 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Slide
         public string Message { get; set; }
 
         [Area("Administration")]
-        [Route("admin/shop/slide/index")]
+        [Route("admin/slides")]
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            _slideViewModels = _slideApplication.GetList();
+            _slideViewModels = await _slideApplication.GetList();
             return View(_slideViewModels);
         }
 
 
         [Area("Administration")]
-        [Route("admin/shop/slide/Create")]
+        [Route("admin/slide/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new CreateSlide();
 
@@ -41,11 +39,11 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Slide
         }
 
         [Area("Administration")]
-        [Route("admin/shop/slide/Create")]
+        [Route("admin/slide/Create")]
         [HttpPost]
-        public JsonResult Create(CreateSlide commend)
+        public async Task<JsonResult> Create(CreateSlide commend)
         {
-            var result = _slideApplication.Create(commend);
+            var result = await _slideApplication.Create(commend);
 
             return new JsonResult(result);
         }
@@ -53,33 +51,33 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Slide
 
 
         [Area("Administration")]
-        [Route("admin/shop/slide/Edit")]
+        [Route("admin/slide/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            var editProduct = _slideApplication.GetDetails(Id);
+            var editProduct = await _slideApplication.GetDetails(Id);
             
 
             return PartialView("_Edit", editProduct);
         }
 
         [Area("Administration")]
-        [Route("admin/shop/slide/Edit")]
+        [Route("admin/slide/Edit")]
 
-        public JsonResult Edit(EditSlide commend)
+        public async Task<JsonResult> Edit(EditSlide commend)
         {
-            var result = _slideApplication.Edit(commend);
+            var result = await _slideApplication.Edit(commend);
             return new JsonResult(result);
         }
 
 
 
         [Area("Administration")]
-        [Route("admin/shop/slide/Remove")]
+        [Route("admin/slide/Remove")]
 
-        public IActionResult Remove(long id)
+        public async Task<IActionResult> Remove(long id)
         {
-            var result = _slideApplication.Remove(id);
+            var result = await _slideApplication.Remove(id);
             if (result.IsSucceeded)
                 return Redirect("./index");
 
@@ -88,10 +86,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Shop.Slide
         }
 
         [Area("Administration")]
-        [Route("admin/shop/slide/Restore")]
-        public IActionResult Restore(long id)
+        [Route("admin/slide/Restore")]
+        public async Task<IActionResult> Restore(long id)
         {
-            var result = _slideApplication.Restore(id);
+            var result = await _slideApplication.Restore(id);
             if (result.IsSucceeded)
                 return Redirect("./index");
 
