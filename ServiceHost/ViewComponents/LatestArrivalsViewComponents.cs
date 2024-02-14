@@ -12,9 +12,9 @@ namespace ServiceHost.ViewComponents
             _productQuery = productQuery;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> Invoke()
         {
-            var productQueryModel = _productQuery.GetLatestArrivals();
+            var productQueryModel = await  _productQuery.GetLatestArrivals();
             return View(productQueryModel);
         }
     }
