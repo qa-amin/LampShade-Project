@@ -10,11 +10,11 @@ namespace DiscountManagement.Application.Contracts.ColleagueDiscount
 {
     public interface IColleagueDiscountApplication
     {
-        OperationResult Define(DefineColleagueDiscount command);
-        OperationResult Edit(EditColleagueDiscount command);
-        OperationResult Remove(long id);
-        OperationResult Restore(long id);
-        List<ColleagueDiscountViewModel> search(ColleagueDiscountSearchModel searchModel);
-        EditColleagueDiscount GetDetails(long id);
+        Task<OperationResult> Define(DefineColleagueDiscount command);
+        Task<OperationResult> Edit(EditColleagueDiscount command);
+        Task<OperationResult> Remove(long id);
+        Task<OperationResult> Restore(long id);
+        Task<List<ColleagueDiscountViewModel>> search(ColleagueDiscountSearchModel searchModel);
+        Task<EditColleagueDiscount> GetDetails(long id);
     }
 }
