@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using _0_Framework.Domain;
+﻿using _0_Framework.Domain;
+using DiscountManagement.Application.Contracts.ColleagueDiscount;
 
 namespace DiscountManagement.Domain.ColleagueDiscountAgg
 {
     public interface IColleagueDiscountRepository : IRepository<long , ColleagueDiscount>
     {
-       List<ColleagueDiscount> Search(long id);
-       ColleagueDiscount GetDetails(long id);
+       Task<List<ColleagueDiscountViewModel>> Search(long id);
+       Task<EditColleagueDiscount> GetDetails(long id);
     }
 }
