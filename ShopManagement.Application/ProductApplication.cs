@@ -1,4 +1,5 @@
 ﻿using _0_Framework.Application;
+using MailChimp.Net.Models;
 using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Domain.ProductCategoryAgg;
@@ -32,6 +33,10 @@ namespace ShopManagement.Application
             var product = new Product(command.Name,  command.Code, command.ShortDescription,
                 command.Description, picturePath, command.PictureAlt, command.PictureTitle, slug,
                 command.KeyWords, command.MetaDescription, command.CategoryId);
+
+            var productCategory = await _productCategoryRepository.Get(product.CategoryId);
+
+            product.AddCategory(productCategory);
             await _productRepository.Create(product);
             await _productRepository.SaveChanges();
             return opration.Succeeded();
@@ -56,6 +61,10 @@ namespace ShopManagement.Application
             getDetails.Edit(command.Name, command.Code, command.ShortDescription,
                 command.Description,picturePath, command.PictureAlt, command.PictureTitle, slug,
                 command.KeyWords, command.MetaDescription, command.CategoryId);
+
+            var productCategory = await _productCategoryRepository.Get(getDetails.CategoryId);
+
+            getDetails.AddCategory(productCategory);
             await _productRepository.SaveChanges();
 
             return opration.Succeeded();

@@ -12,10 +12,7 @@ namespace ShopManagement.Domain.ProductAgg
     public class Product : EntityBase
     {
         public string Name { get; private set; }
-        
-        //public double UnitPrice { get; private set; }
         public string Code { get; private set; }
-        //public bool IsInStock { get; private set; }
         public string ShortDescription  { get; private set; }
         public string Description { get; private set; }
         public string Picture { get; private set; }
@@ -32,7 +29,6 @@ namespace ShopManagement.Domain.ProductAgg
         public Product(string name,  string code, string shortDescription, string description, string picture, string pictureAlt, string pictureTitle, string slug, string keyWords, string metaDescription, long categoryId)
         {
             Name = name;
-            //UnitPrice = unitPrice;
             Code = code;
             ShortDescription = shortDescription;
             Description = description;
@@ -43,12 +39,11 @@ namespace ShopManagement.Domain.ProductAgg
             KeyWords = keyWords;
             MetaDescription = metaDescription;
             CategoryId = categoryId;
-            //IsInStock = true;
+            
         }
         public void Edit(string name, string code, string shortDescription, string description, string picture, string pictureAlt, string pictureTitle, string slug, string keyWords, string metaDescription, long categoryId)
         {
             Name = name;
-            //UnitPrice = unitPrice;
             Code = code;
             ShortDescription = shortDescription;
             Description = description;
@@ -64,14 +59,9 @@ namespace ShopManagement.Domain.ProductAgg
         }
 
 
-        //public void InStock()
-        //{
-        //    IsInStock = true;
-        //}
-
-        //public void NotInStock()
-        //{
-        //    IsInStock = false;
-        //}
+        public void AddCategory(ProductCategory category)
+        {
+            Category = category;
+        }
     }
 }
