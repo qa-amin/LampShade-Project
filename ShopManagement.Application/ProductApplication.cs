@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using _0_Framework.Application;
+﻿using _0_Framework.Application;
 using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Domain.ProductCategoryAgg;
@@ -24,108 +19,67 @@ namespace ShopManagement.Application
             _productCategoryRepository = productCategoryRepository;
         }
 
-        public OperationResult Create(CreateProduct command)
+        public async Task<OperationResult> Create(CreateProduct command)
         {
             var opration = new OperationResult();
-            if(_productRepository.Exists(x => x.Name==command.Name))
+            if(await _productRepository.Exists(x => x.Name==command.Name))
                 return opration.Failed(ApplicationMessages.DuplicatedRecord);
 
             var slug = command.Slug.Slugify();
-            var categorySlug = _productCategoryRepository.GetSlugById(command.CategoryId);
+            var categorySlug = await _productCategoryRepository.GetSlugById(command.CategoryId);
             var path = $"{categorySlug}/{slug}";
             var picturePath = _fileUploader.Upload(command.Picture, path);
             var product = new Product(command.Name,  command.Code, command.ShortDescription,
                 command.Description, picturePath, command.PictureAlt, command.PictureTitle, slug,
                 command.KeyWords, command.MetaDescription, command.CategoryId);
-            _productRepository.Create(product);
-            _productRepository.SaveChanges();
+            await _productRepository.Create(product);
+            await _productRepository.SaveChanges();
             return opration.Succeeded();
         }
 
-        public OperationResult Edit(EditProduct command)
+        public async Task<OperationResult> Edit(EditProduct command)
         {
             var opration = new OperationResult();
-            var getDetails = _productRepository.GetDetails(command.Id);
+            var getDetails = await _productRepository.Get(command.Id);
             if (getDetails == null)
             {
                 return opration.Failed(ApplicationMessages.RecordNotFound);
             }
-            if (_productRepository.Exists(x => x.Name == command.Name && x.Id != command.Id))
+            if (await _productRepository.Exists(x => x.Name == command.Name && x.Id != command.Id))
             {
                 return opration.Failed(ApplicationMessages.DuplicatedRecord);
             }
             var slug = command.Slug.Slugify();
-            var categorySlug = _productCategoryRepository.GetSlugById(command.CategoryId);
+            var categorySlug = await _productCategoryRepository.GetSlugById(command.CategoryId);
             var path = $"{categorySlug}/{slug}";
             var picturePath = _fileUploader.Upload(command.Picture, path);
             getDetails.Edit(command.Name, command.Code, command.ShortDescription,
                 command.Description,picturePath, command.PictureAlt, command.PictureTitle, slug,
                 command.KeyWords, command.MetaDescription, command.CategoryId);
-            _productRepository.SaveChanges();
+            await _productRepository.SaveChanges();
 
             return opration.Succeeded();
         }
 
-        public EditProduct GetDetails(long Id)
+        public async Task<EditProduct> GetDetails(long id)
         {
-            var product =  _productRepository.GetDetails(Id);
-            var editProduct = new EditProduct
-            {
-                Name = product.Name,
-                Description = product.Description,
-                CategoryId = product.CategoryId,
-                Code = product.Code,
-                Id = product.Id,
-                PictureTitle = product.PictureTitle,
-                PictureAlt = product.PictureAlt,
-                //Picture = product.Picture,
-                KeyWords = product.KeyWords,
-                MetaDescription = product.MetaDescription,
-                Slug = product.Slug,
-                ShortDescription = product.ShortDescription,
-                //UnitPrice = product.UnitPrice,
-
-            };
-            return editProduct;
+            return await _productRepository.GetDetails(id);
         }
 
-        public List<ProductViewModel> Search(ProductSearchModel searchModel)
+        public async Task<List<ProductViewModel>> Search(ProductSearchModel searchModel)
         {
 
-            var listProduct = _productRepository.Search(searchModel.Name, searchModel.Code, searchModel.CategoryId);
-            var listProductViewModel = listProduct.Select(x => new ProductViewModel
-            {
-                Name = x.Name,
-                Code = x.Code,
-                Id = x.Id,
-                Picture = x.Picture,
-                //UnitPrice = x.UnitPrice,
-                CategoryId = x.CategoryId,
-                Category = x.Category.Name,
-                CreationDate = x.CreationDate.ToFarsi(),
-                //IsInStock = x.IsInStock,
-
-
-
-            }).ToList();
-
-            return listProductViewModel;
+            return await _productRepository.Search(searchModel.Name, searchModel.Code, searchModel.CategoryId);
+            
         }
 
       
 
-        public List<ProductViewModel> GetProducts()
+        public async Task<List<ProductViewModel>> GetProducts()
         {
 
-            var listProduct = _productRepository.GetProducts();
-            var listProductViewModel = listProduct.Select(x => new ProductViewModel
-            {
-                Name = x.Name,
-                Id = x.Id,
-
-            }).ToList();
-
-            return listProductViewModel;
+            return await _productRepository.GetProducts();
+           
         }
     }
 }
