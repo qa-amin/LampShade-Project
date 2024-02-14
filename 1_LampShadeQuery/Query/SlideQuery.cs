@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity;
 using _1_LampShadeQuery.Contracts.Slide;
 using ShopManagement.Infrastructure.EFCore;
 
@@ -17,9 +13,9 @@ namespace _1_LampShadeQuery.Query
             _shopManagementDbContext = shopManagementDbContext;
         }
 
-        public List<SlideQueryModel> GetSlides()
+        public async Task<List<SlideQueryModel>> GetSlides()
         {
-            return _shopManagementDbContext.Slides.Where(x => x.IsRemoved == false).Select(x => new SlideQueryModel
+            return await _shopManagementDbContext.Slides.Where(x => x.IsRemoved == false).Select(x => new SlideQueryModel
             {
                 BtnText = x.BtnText,
                 Heading = x.Heading,
@@ -31,7 +27,7 @@ namespace _1_LampShadeQuery.Query
                 Text = x.Text,
                 Title = x.Title,
 
-            }).ToList();
+            }).ToListAsync();
         }
     }
 }
