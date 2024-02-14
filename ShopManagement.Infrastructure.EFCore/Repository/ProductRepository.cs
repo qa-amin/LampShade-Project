@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using _0_Framework.Application;
 using _0_Framework.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Domain.ProductAgg;
 
 namespace ShopManagement.Infrastructure.EFCore.Repository
@@ -19,39 +16,81 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
         }
 
 
-        public List<Product> Search(string? Name, string? Code, long? CategoryId)
+        public async Task<List<ProductViewModel>> Search(string? name, string? code, long? categoryId)
         {
-            var query = _context.Products.Include(x => x.Category).ToList();
+            var query = await _context.Products.Include(x => x.Category).ToListAsync();
 
-            if (!string.IsNullOrWhiteSpace(Name))
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                query = query.Where(x => x.Name.Contains(Name)).ToList();
+                query = query.Where(x => x.Name.Contains(name)).ToList();
             }
-            if (!string.IsNullOrWhiteSpace(Code))
+            if (!string.IsNullOrWhiteSpace(code))
             {
-                query = query.Where(x => x.Code.Contains(Code)).ToList();
-            }
-
-            if (CategoryId != 0 && CategoryId != null)
-            {
-                query = query.Where(x => x.CategoryId == CategoryId).ToList();
+                query = query.Where(x => x.Code.Contains(code)).ToList();
             }
 
-            return query.OrderByDescending(x => x.Id).ToList();
+            if (categoryId != 0 && categoryId != null)
+            {
+                query = query.Where(x => x.CategoryId == categoryId).ToList();
+            }
+
+            return query.OrderByDescending(x => x.Id).Select(p => new ProductViewModel()
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Code = p.Code,
+                CategoryId = p.CategoryId,
+                Category = p.Category.Name,
+                CreationDate = p.CreationDate.ToFarsi(),
+                Picture = p.Picture
+            }).ToList();
         }
 
-        public Product GetDetails(long Id)
+        public async Task<EditProduct> GetDetails(long id)
         {
-            return _context.Products.Find(Id);
+            var product = await _context.Products.FindAsync(id);
+            return new EditProduct()
+            {
+                Name = product.Name,
+                Description = product.Description,
+                CategoryId = product.CategoryId,
+                Code = product.Code,
+                Id = product.Id,
+                PictureTitle = product.PictureTitle,
+                PictureAlt = product.PictureAlt,
+                KeyWords = product.KeyWords,
+                MetaDescription = product.MetaDescription,
+                Slug = product.Slug,
+                ShortDescription = product.ShortDescription
+            };
         }
 
-        public List<Product> GetProducts()
+        public async Task<List<ProductViewModel>> GetProducts()
         {
-            return _context.Products.ToList();
+            return await _context.Products.Select(p => new ProductViewModel()
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Code = p.Code,
+                CategoryId = p.CategoryId,
+                Category = p.Category.Name,
+                CreationDate = p.CreationDate.ToFarsi(),
+                Picture = p.Picture
+            }).ToListAsync();
         }
-        public Product GetProductWithCategory(long id)
+        public async Task<ProductViewModel> GetProductWithCategory(long id)
         {
-            return _context.Products.Include(x => x.Category).FirstOrDefault(x => x.Id == id);
+            var product =  await _context.Products.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
+            return new ProductViewModel()
+            {
+                Name = product.Name,
+                CategoryId = product.CategoryId,
+                Code = product.Code,
+                Id = product.Id,
+                Category = product.Category.Name,
+                Picture = product.Picture,
+                CreationDate = product.CreationDate.ToFarsi()
+            };
         }
     }
 }
