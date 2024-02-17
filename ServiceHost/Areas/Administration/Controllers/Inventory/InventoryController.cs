@@ -3,6 +3,7 @@ using InventoryManagement.Application.Contracts.Inventory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Nancy.Json;
 using ShopManagement.Application.Contracts.Product;
 
 namespace ServiceHost.Areas.Administration.Controllers.Inventory
@@ -13,7 +14,6 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         private readonly IInventoryApplication _inventoryApplication;
         private readonly IProductApplication _productApplication;
 
-        private List<InventoryViewModel> _inventoryViewModels = new List<InventoryViewModel>();
 
 
         public InventoryController(IInventoryApplication inventoryApplication, IProductApplication productApplication)
@@ -27,9 +27,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
 
 
         [Area("Administration")]
-        [Route("admin/inventory/index")]
+        [Route("admin/inventory")]
         [HttpGet]
-        public IActionResult Index(long? productId, bool? inStock)
+        public async Task<IActionResult> Index(long? productId, bool? inStock)
         {
             var serchModel = new InventorySearchModel()
             {
@@ -37,12 +37,12 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
                 ProductId = productId
             };
 
-            _inventoryViewModels = _inventoryApplication.Search(serchModel);
+            var inventoryViewModels = await _inventoryApplication.Search(serchModel);
 
-            var products = new SelectList(_productApplication.GetProducts(), "Id", "Name");
+            var products = new SelectList(await _productApplication.GetProducts(), "Id", "Name");
             ViewBag.products = products;
 
-            return View(_inventoryViewModels);
+            return View(inventoryViewModels);
         }
 
 
@@ -50,20 +50,20 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         [Area("Administration")]
         [Route("admin/inventory/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new CreateInventory();
             
-            command.Products = _productApplication.GetProducts();
+            command.Products =  await _productApplication.GetProducts();
             return PartialView("_Create", command);
         }
 
         [Area("Administration")]
         [Route("admin/inventory/Create")]
         [HttpPost]
-        public JsonResult Create(CreateInventory commend)
+        public async Task<JsonResult> Create(CreateInventory commend)
         {
-            var result = _inventoryApplication.Create(commend);
+            var result = await _inventoryApplication.Create(commend);
 
             return new JsonResult(result);
         }
@@ -73,10 +73,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         [Area("Administration")]
         [Route("admin/inventory/Edit")]
         [HttpGet]
-        public IActionResult Edit(long id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var editInventory = _inventoryApplication.GetDetails(id);
-            editInventory.Products = _productApplication.GetProducts();
+            var editInventory = await _inventoryApplication.GetDetails(id);
+            editInventory.Products = await _productApplication.GetProducts();
 
             return PartialView("_Edit", editInventory);
         }
@@ -84,16 +84,16 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         [Area("Administration")]
         [Route("admin/inventory/Edit")]
 
-        public JsonResult Edit(EditInventory commend)
+        public async Task<JsonResult> Edit(EditInventory commend)
         {
-            var result = _inventoryApplication.Edit(commend);
+            var result = await _inventoryApplication.Edit(commend);
             return new JsonResult(result);
         }
 
         [Area("Administration")]
         [Route("admin/inventory/Increase")]
         [HttpGet]
-        public IActionResult Increase(long id)
+        public async Task<IActionResult> Increase(long id)
         {
 
             var command = new IncreaseInventory
@@ -106,10 +106,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         [Area("Administration")]
         [Route("admin/inventory/Increase")]
         [HttpPost]
-        public IActionResult Increase(IncreaseInventory command)
+        public async Task<JsonResult> Increase(IncreaseInventory command)
         {
 
-            var result = _inventoryApplication.Increase(command);
+            var result = await _inventoryApplication.Increase(command);
 
             return new JsonResult(result);
         }
@@ -119,7 +119,7 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
 
         [Area("Administration")]
         [Route("admin/inventory/Decrease")]
-        public IActionResult Decrease(long id)
+        public async Task<IActionResult> Decrease(long id)
         {
 
             var command = new DecreaseInventory()
@@ -133,10 +133,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         [Area("Administration")]
         [Route("admin/inventory/Decrease")]
         [HttpPost]
-        public IActionResult Decrease(DecreaseInventory command)
+        public async Task<JsonResult> Decrease(DecreaseInventory command)
         {
 
-            var result = _inventoryApplication.Reduce(command);
+            var result = await _inventoryApplication.Reduce(command);
 
 
             return new JsonResult(result);
@@ -148,9 +148,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Inventory
         [Area("Administration")]
         [Route("admin/inventory/Log")]
         [HttpGet]
-        public IActionResult Log(long id)
+        public async Task<IActionResult> Log(long id)
         {
-            var result = _inventoryApplication.GetOperationLog(id);
+            var result = await _inventoryApplication.GetOperationLog(id);
 
 
             return PartialView("_Log", result);
