@@ -15,15 +15,16 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
 	        _accountManagementDbContext = accountManagementDbContext;
         }
 
-        public EditRole GetDetails(long id)
+        public async Task<EditRole> GetDetails(long id)
         {
-            var role = _accountManagementDbContext.Roles.Select(x => new EditRole
+            var role = await _accountManagementDbContext.Roles
+                .Select(x => new EditRole
                 {
                     Id = x.Id,
                     Name = x.Name,
                     MappedPermissions = MapPermissions(x.Permissions)
                 }).AsNoTracking()
-                .FirstOrDefault(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             role.Permissions = role.MappedPermissions.Select(x => x.Code).ToList();
 
@@ -35,14 +36,14 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
             return permissions.Select(x => new PermissionDto(x.Code, x.Name)).ToList();
         }
 
-        public List<RoleViewModel> List()
+        public async Task<List<RoleViewModel>> List()
         {
-            return _accountManagementDbContext.Roles.Select(x => new RoleViewModel
+            return await _accountManagementDbContext.Roles.Select(x => new RoleViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
                 CreationDate = x.CreationDate.ToFarsi()
-            }).ToList();
+            }).ToListAsync();
         }
     }
 }

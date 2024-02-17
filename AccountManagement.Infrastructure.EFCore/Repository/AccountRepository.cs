@@ -15,24 +15,24 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
             _accountManagementDbContext = accountManagementDbContext;
         }
 
-        public Account GetBy(string username)
+        public async Task<Account> GetBy(string username)
         {
-            return _accountManagementDbContext.Accounts.FirstOrDefault(x => x.Username == username);
+            return await _accountManagementDbContext.Accounts.FirstOrDefaultAsync(x => x.Username == username);
         }
 
-        public EditAccount GetDetails(long id)
+        public async Task<EditAccount> GetDetails(long id)
         {
-            return _accountManagementDbContext.Accounts.Select(x => new EditAccount
+            return await _accountManagementDbContext.Accounts.Select(x => new EditAccount
             {
                 Id = x.Id,
                 Fullname = x.Fullname,
                 Mobile = x.Mobile,
                 RoleId = x.RoleId,
                 Username = x.Username
-            }).FirstOrDefault(x => x.Id == id);
+            }).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public List<AccountViewModel> GetAccounts()
+        public async Task<List<AccountViewModel>> GetAccounts()
         {
             return _accountManagementDbContext.Accounts.Select(x => new AccountViewModel
             {
@@ -41,9 +41,9 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
             }).ToList();
         }
 
-        public List<AccountViewModel> Search(AccountSearchModel searchModel)
+        public async Task<List<AccountViewModel>> Search(AccountSearchModel searchModel)
         {
-            var query = _accountManagementDbContext.Accounts.Include(x => x.Role).Select(x => new AccountViewModel
+            var query =  _accountManagementDbContext.Accounts.Include(x => x.Role).Select(x => new AccountViewModel
             {
                 Id = x.Id,
                 Fullname = x.Fullname,
@@ -67,7 +67,7 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
             if (searchModel.RoleId > 0)
                 query = query.Where(x => x.RoleId == searchModel.RoleId);
 
-            return query.OrderByDescending(x => x.Id).ToList();
+            return await query.OrderByDescending(x => x.Id).ToListAsync();
         }
     }
 }
