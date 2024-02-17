@@ -34,11 +34,11 @@ namespace AccountManagement.Infrastructure.EFCore.Repository
 
         public async Task<List<AccountViewModel>> GetAccounts()
         {
-            return _accountManagementDbContext.Accounts.Select(x => new AccountViewModel
+            return await _accountManagementDbContext.Accounts.Select(x => new AccountViewModel
             {
                 Id = x.Id,
                 Fullname = x.Fullname
-            }).ToList();
+            }).ToListAsync();
         }
 
         public async Task<List<AccountViewModel>> Search(AccountSearchModel searchModel)
