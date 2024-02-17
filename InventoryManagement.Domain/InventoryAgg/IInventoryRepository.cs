@@ -12,6 +12,6 @@ namespace InventoryManagement.Domain.InventoryAgg
     {
         Task<EditInventory> GetDetails(long id);
         Task<List<InventoryViewModel>> Search(long? productId, bool? inStock);
-        List<InventoryOperationViewModel> GetOperationLog(long inventoryId);
+        Task<List<InventoryOperationViewModel>> GetOperationLog(long inventoryId);
     }
 }
