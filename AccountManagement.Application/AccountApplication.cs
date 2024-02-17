@@ -1,8 +1,6 @@
 ﻿using _0_Framework.Application;
 using AccountManagement.Application.Contracts.Account;
 using AccountManagement.Domain.AccountAgg;
-using System.Collections.Generic;
-using System.Linq;
 using AccountManagement.Domain.RoleAgg;
 
 
@@ -24,10 +22,10 @@ namespace AccountManagement.Application
             _authHelper = authHelper;
         }
 
-        public OperationResult ChangePassword(ChangePassword command)
+        public async Task<OperationResult> ChangePassword(ChangePassword command)
         {
             var operation = new OperationResult();
-            var account = _accountRepository.Get(command.Id);
+            var account = await _accountRepository.Get(command.Id);
             if (account == null)
                 return operation.Failed(ApplicationMessages.RecordNotFound);
 
@@ -36,13 +34,13 @@ namespace AccountManagement.Application
 
             var password = _passwordHasher.Hash(command.Password);
             account.ChangePassword(password);
-            _accountRepository.SaveChanges();
+            await _accountRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public AccountViewModel GetAccountBy(long id)
+        public async Task<AccountViewModel> GetAccountBy(long id)
         {
-            var account = _accountRepository.Get(id);
+            var account = await _accountRepository.Get(id);
             return new AccountViewModel()
             {
                 Fullname = account.Fullname,
@@ -50,11 +48,11 @@ namespace AccountManagement.Application
             };
         }
 
-        public OperationResult Register(RegisterAccount command)
+        public async Task<OperationResult> Register(RegisterAccount command)
         {
             var operation = new OperationResult();
 
-            if (_accountRepository.Exists(x => x.Username == command.Username || x.Mobile == command.Mobile))
+            if (await _accountRepository.Exists(x => x.Username == command.Username || x.Mobile == command.Mobile))
                 return operation.Failed(ApplicationMessages.DuplicatedRecord);
 
             var password = _passwordHasher.Hash(command.Password);
@@ -62,38 +60,38 @@ namespace AccountManagement.Application
             var picturePath = _fileUploader.Upload(command.ProfilePhoto, path);
             var account = new Account(command.Fullname, command.Username, password, command.Mobile, command.RoleId,
                 picturePath);
-            _accountRepository.Create(account);
-            _accountRepository.SaveChanges();
+            await _accountRepository.Create(account);
+            await _accountRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public OperationResult Edit(EditAccount command)
+        public async Task<OperationResult> Edit(EditAccount command)
         {
             var operation = new OperationResult();
-            var account = _accountRepository.Get(command.Id);
+            var account = await _accountRepository.Get(command.Id);
             if (account == null)
                 return operation.Failed(ApplicationMessages.RecordNotFound);
 
-            if (_accountRepository.Exists(x =>
+            if (await _accountRepository.Exists(x =>
                 (x.Username == command.Username || x.Mobile == command.Mobile) && x.Id != command.Id))
                 return operation.Failed(ApplicationMessages.DuplicatedRecord);
 
             var path = $"profilePhotos";
             var picturePath = _fileUploader.Upload(command.ProfilePhoto, path);
             account.Edit(command.Fullname, command.Username, command.Mobile, command.RoleId, picturePath);
-            _accountRepository.SaveChanges();
+            await _accountRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public EditAccount GetDetails(long id)
+        public async Task<EditAccount> GetDetails(long id)
         {
-            return _accountRepository.GetDetails(id);
+            return await _accountRepository.GetDetails(id);
         }
 
-        public OperationResult Login(Login command)
+        public async Task<OperationResult> Login(Login command)
         {
             var operation = new OperationResult();
-            var account = _accountRepository.GetBy(command.Username);
+            var account = await _accountRepository.GetBy(command.Username);
             if (account == null)
                 return operation.Failed(ApplicationMessages.WrongUserPass);
 
@@ -101,10 +99,8 @@ namespace AccountManagement.Application
             if (!result.Verified)
                 return operation.Failed(ApplicationMessages.WrongUserPass);
 
-            var permissions = _roleRepository.Get(account.RoleId)
-                .Permissions
-                .Select(x => x.Code)
-                .ToList();
+            var role = await _roleRepository.Get(account.RoleId);
+            var permissions = role.Permissions.Select(x => x.Code).ToList();
 
             var authViewModel = new AuthViewModel(account.Id, account.RoleId, account.Fullname
                 , account.Username, account.Mobile,permissions, account.ProfilePhoto);
@@ -113,17 +109,17 @@ namespace AccountManagement.Application
             return operation.Succeeded();
         }
 
-        public void Logout()
+        public async Task Logout()
         {
-            _authHelper.SignOut();
+             _authHelper.SignOut();
         }
 
-        public List<AccountViewModel> GetAccounts()
+        public Task<List<AccountViewModel>> GetAccounts()
         {
             return _accountRepository.GetAccounts();
         }
 
-        public List<AccountViewModel> Search(AccountSearchModel searchModel)
+        public Task<List<AccountViewModel>> Search(AccountSearchModel searchModel)
         {
             return _accountRepository.Search(searchModel);
         }
