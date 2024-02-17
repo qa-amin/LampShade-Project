@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\0_Framework\0_Framework.csproj" />
     <ProjectReference Include="..\ShopManagement.Applictation.Contracts\ShopManagement.Application.Contracts.csproj" />
-    <ProjectReference Include="..\ShopManagment.Domain\ShopManagement.Domain.csproj" />
   </ItemGroup>
 
 </Project>
