@@ -3,7 +3,6 @@ using AccountManagement.Application.Contracts.Role;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ServiceHost.Areas.Administration.Controllers.Account.Role
 {
@@ -26,19 +25,12 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
             _exposers = exposers;
         }
 
-        [TempData]
-        public string Message { get; set; }
-
-
-
-        
-
         [Area("Administration")]
-        [Route("admin/account/role/index")]
+        [Route("admin/roles")]
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var roles = _roleApplication.List();
+            var roles = await _roleApplication.List();
             //var accountRole = new SelectList(_roleApplication.List(), "Id", "Name");
             //ViewBag.AccountRole = accountRole;
 
@@ -47,9 +39,9 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
 
 
         [Area("Administration")]
-        [Route("admin/account/role/Create")]
+        [Route("admin/role/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new CreateRole();
             
@@ -58,11 +50,11 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
         }
 
         [Area("Administration")]
-        [Route("admin/account/role/Create")]
+        [Route("admin/role/Create")]
         [HttpPost]
-        public IActionResult Create(CreateRole commend)
+        public async Task<IActionResult> Create(CreateRole commend)
         {
-            var result = _roleApplication.Create(commend);
+            var result = await _roleApplication.Create(commend);
 
             return RedirectToAction("Index");
         }
@@ -70,11 +62,11 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
 
 
         [Area("Administration")]
-        [Route("admin/account/role/Edit")]
+        [Route("admin/role/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            var Command = _roleApplication.GetDetails(Id);
+            var Command = await _roleApplication.GetDetails(Id);
             foreach (var exposer in _exposers)
             {
                 var exposedPermissions = exposer.Expose();
@@ -100,11 +92,10 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Role
         }
 
         [Area("Administration")]
-        [Route("admin/account/role/Edit")]
-
-        public IActionResult Edit(EditRole commend)
+        [Route("admin/role/Edit")]
+        public async Task<IActionResult> Edit(EditRole commend)
         {
-            var result = _roleApplication.Edit(commend);
+            var result = await _roleApplication.Edit(commend);
             return RedirectToAction("Index");
         }
 

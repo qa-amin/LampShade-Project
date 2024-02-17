@@ -22,51 +22,44 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Account
 	        _roleApplication = roleApplication;
         }
 
-        [TempData]
-        public string Message { get; set; }
-
-
-
-        
-
         [Area("Administration")]
-        [Route("admin/account/account/index")]
+        [Route("admin/accounts")]
         [HttpGet]
-        public IActionResult Index(string? fullname, string? username, string? mobile,  long? roleId)
+        public async Task<IActionResult> Index(string? fullname, string? username, string? mobile,  long? roleId)
         {
-            var SearchModel = new AccountSearchModel()
+            var searchModel = new AccountSearchModel()
             {
                 Fullname = fullname,
                 Mobile =mobile ,
                 Username =username,
                 RoleId = roleId
             };
-            var accountRole = new SelectList(_roleApplication.List(), "Id", "Name");
+            var accountRole = new SelectList(  await _roleApplication.List(), "Id", "Name");
             ViewBag.AccountRole = accountRole;
 
-            _accountViewModels = _accountApplication.Search(SearchModel);
+            _accountViewModels = await _accountApplication.Search(searchModel);
             return View(_accountViewModels);
         }
 
 
         [Area("Administration")]
-        [Route("admin/account/account/Create")]
+        [Route("admin/account/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new RegisterAccount();
-            command.Roles = _roleApplication.List();
+            command.Roles = await _roleApplication.List();
             
            
             return PartialView("_Create", command);
         }
 
         [Area("Administration")]
-        [Route("admin/account/account/Create")]
+        [Route("admin/account/Create")]
         [HttpPost]
-        public JsonResult Create(RegisterAccount commend)
+        public async Task<JsonResult> Create(RegisterAccount commend)
         {
-            var result = _accountApplication.Register(commend);
+            var result = await _accountApplication.Register(commend);
 
             return new JsonResult(result);
         }
@@ -74,30 +67,30 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Account
 
 
         [Area("Administration")]
-        [Route("admin/account/account/Edit")]
+        [Route("admin/account/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            var editAccount = _accountApplication.GetDetails(Id);
+            var editAccount = await _accountApplication.GetDetails(Id);
 
-            editAccount.Roles = _roleApplication.List();
+            editAccount.Roles = await _roleApplication.List();
 			return PartialView("_Edit", editAccount);
         }
 
         [Area("Administration")]
-        [Route("admin/account/account/Edit")]
+        [Route("admin/account/Edit")]
 
-        public JsonResult Edit(EditAccount commend)
+        public async Task<JsonResult> Edit(EditAccount commend)
         {
-            var result = _accountApplication.Edit(commend);
+            var result = await _accountApplication.Edit(commend);
             return new JsonResult(result);
         }
 
         [Area("Administration")]
-        [Route("admin/account/account/ChangePassword")]
+        [Route("admin/account/ChangePassword")]
         [HttpGet]
 
-        public IActionResult ChangePassword(long id)
+        public async Task<IActionResult> ChangePassword(long id)
         {
             var changePassword = new ChangePassword
             {
@@ -106,11 +99,11 @@ namespace ServiceHost.Areas.Administration.Controllers.Account.Account
             return PartialView("_ChangePassword", changePassword);
         }
         [Area("Administration")]
-        [Route("admin/account/account/ChangePassword")]
+        [Route("admin/account/ChangePassword")]
         [HttpPost]
-        public JsonResult ChangePassword(ChangePassword command)
+        public async Task<JsonResult> ChangePassword(ChangePassword command)
         {
-	        var result = _accountApplication.ChangePassword(command);
+	        var result = await _accountApplication.ChangePassword(command);
 			return new JsonResult(result);
 		}
 
