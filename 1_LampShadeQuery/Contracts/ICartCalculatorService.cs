@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ShopManagement.Application.Contracts.Order;
 
-using ShopManagement.Application.Contracts.Order;
-using ShopManagement.Infrastructure.EFCore;
-
-namespace _01_LampshadeQuery.Contracts
+namespace _1_LampShadeQuery.Contracts
 {
     public interface ICartCalculatorService
     {
-        Cart ComputeCart(List<CartItem> cartItems);
+        Task<Cart> ComputeCart(List<CartItem> cartItems);
     }
 }

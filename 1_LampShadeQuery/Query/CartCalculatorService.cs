@@ -1,6 +1,7 @@
-﻿using _0_Framework.Application;
+﻿using System.Data.Entity;
+using _0_Framework.Application;
 using _0_Framework.Infrastructure;
-using _01_LampshadeQuery.Contracts;
+using _1_LampShadeQuery.Contracts;
 using DiscountManagement.Infrastructure.EFCore;
 using ShopManagement.Application.Contracts.Order;
 
@@ -17,18 +18,18 @@ namespace _1_LampShadeQuery.Query
             _authHelper = authHelper;
         }
 
-        public Cart ComputeCart(List<CartItem> cartItems)
+        public async Task<Cart> ComputeCart(List<CartItem> cartItems)
         {
             var cart = new Cart();
-            var colleagueDiscounts = _discountManagementDbContext.ColleagueDiscounts
+            var colleagueDiscounts = await _discountManagementDbContext.ColleagueDiscounts
                 .Where(x => !x.IsRemoved)
                 .Select(x => new {x.DiscountRate, x.ProductId})
-                .ToList();
+                .ToListAsync();
 
-            var customerDiscounts = _discountManagementDbContext.CustomerDiscounts
+            var customerDiscounts = await _discountManagementDbContext.CustomerDiscounts
                 .Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now)
                 .Select(x => new {x.DiscountRate, x.ProductId})
-                .ToList();
+                .ToListAsync();
             var currentAccountRole = _authHelper.CurrentAccountRole();
 
             foreach (var cartItem in cartItems)

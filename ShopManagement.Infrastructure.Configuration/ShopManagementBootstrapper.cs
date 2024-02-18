@@ -1,4 +1,5 @@
 ﻿using _0_Framework.Infrastructure;
+using _1_LampShadeQuery.Contracts;
 using _1_LampShadeQuery.Contracts.Product;
 using _1_LampShadeQuery.Contracts.ProductCategory;
 using _1_LampShadeQuery.Contracts.Slide;
@@ -17,7 +18,6 @@ using ShopManagement.Infrastructure.EFCore.Repository;
 using ShopManagement.Domain.ProductCategoryAgg;
 using ShopManagement.Domain.ProductPictureAgg;
 using ShopManagement.Domain.SlideAgg;
-using _01_LampshadeQuery.Contracts;
 using ShopManagement.Application.Contracts.Order;
 using ShopManagement.Domain.OrderAgg;
 using ShopManagement.Domain.Services;
