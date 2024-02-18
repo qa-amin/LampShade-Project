@@ -59,7 +59,7 @@ namespace ShopManagement.Application
             var symbol = _configuration["Symbol"];
             var issueTrackingNo = CodeGenerator.Generate(symbol);
             order.SetIssueTrackingNo(issueTrackingNo);
-            if (!_shopInventoryAcl.ReduceFromInventory(order.Items)) return "";
+            if (! await _shopInventoryAcl.ReduceFromInventory(order.Items)) return "";
 
             await _orderRepository.SaveChanges();
 
