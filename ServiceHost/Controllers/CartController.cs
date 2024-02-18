@@ -19,8 +19,8 @@ namespace ServiceHost.Controllers
             _productQuery = productQuery;
             _contextAccessor = contextAccessor;
         }
-        [Route("/Cart/index")]
-        public IActionResult Index()
+        [Route("/Cart")]
+        public async Task<IActionResult> Index()
         {
             var serializer = new JavaScriptSerializer();
             var value = Request.Cookies[CookieName];
@@ -36,7 +36,7 @@ namespace ServiceHost.Controllers
                     item.CalculateTotalItemPrice();
             }
             ViewBag.cartItems = cartItems;
-            var CartItems = _productQuery.CheckInventoryStatus(cartItems);
+            var CartItems = await _productQuery.CheckInventoryStatus(cartItems);
             return View(CartItems);
         }
 
@@ -57,7 +57,7 @@ namespace ServiceHost.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
-        public IActionResult GoToCheckOut()
+        public async Task<IActionResult> GoToCheckOut()
         {
             var serializer = new JavaScriptSerializer();
             var value = Request.Cookies[CookieName];
@@ -67,7 +67,7 @@ namespace ServiceHost.Controllers
                 item.TotalItemPrice = item.UnitPrice * item.Count;
             }
 
-            var CartItems = _productQuery.CheckInventoryStatus(cartItems);
+            var CartItems = await _productQuery.CheckInventoryStatus(cartItems);
 
             //if (CartItems.Any(x => !x.IsInStock))
             //    return RedirectToPage("/Cart");
