@@ -1,7 +1,6 @@
 ﻿using _0_Framework.Application;
 using CommentManagement.Application.Contracts.Comment;
 using CommentManagement.Domain.CommentAgg;
-using System.Collections.Generic;
 
 namespace CommentManagement.Application
 {
@@ -14,44 +13,44 @@ namespace CommentManagement.Application
             _commentRepository = commentRepository;
         }
 
-        public OperationResult Add(AddComment command)
+        public async Task<OperationResult> Add(AddComment command)
         {
             var operation = new OperationResult();
             var comment = new Comment(command.Name, command.Email, command.Website, command.Message, 
                 command.OwnerRecordId, command.Type, command.ParentId);
 
-            _commentRepository.Create(comment);
-            _commentRepository.SaveChanges();
+            await _commentRepository.Create(comment);
+            await _commentRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public OperationResult Cancel(long id)
+        public async Task<OperationResult> Cancel(long id)
         {
             var operation = new OperationResult();
-            var comment = _commentRepository.Get(id);
+            var comment = await _commentRepository.Get(id);
             if (comment == null)
                 return operation.Failed(ApplicationMessages.RecordNotFound);
 
             comment.Cancel();
-            _commentRepository.SaveChanges();
+            await _commentRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public OperationResult Confirm(long id)
+        public async Task<OperationResult> Confirm(long id)
         {
             var operation = new OperationResult();
-            var comment = _commentRepository.Get(id);
+            var comment = await _commentRepository.Get(id);
             if (comment == null)
                 return operation.Failed(ApplicationMessages.RecordNotFound);
 
             comment.Confirm();
-            _commentRepository.SaveChanges();
+            await _commentRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public List<CommentViewModel> Search(CommentSearchModel searchModel)
+        public async Task<List<CommentViewModel>> Search(CommentSearchModel searchModel)
         {
-            return _commentRepository.Search(searchModel);
+            return await _commentRepository.Search(searchModel);
         }
     }
 }

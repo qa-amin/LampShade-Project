@@ -1,13 +1,12 @@
 ﻿using _0_Framework.Application;
-using System.Collections.Generic;
 
 namespace CommentManagement.Application.Contracts.Comment
 {
     public interface ICommentApplication
     {
-        OperationResult Add(AddComment command);
-        OperationResult Confirm(long id);
-        OperationResult Cancel(long id);
-        List<CommentViewModel> Search(CommentSearchModel searchModel);
+        Task<OperationResult> Add(AddComment command);
+        Task<OperationResult> Confirm(long id);
+        Task<OperationResult> Cancel(long id);
+        Task<List<CommentViewModel>> Search(CommentSearchModel searchModel);
     }
 }
