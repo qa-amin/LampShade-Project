@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using _0_Framework.Application;
 using _0_Framework.Infrastructure;
 using _1_LampShadeQuery.Contracts;
