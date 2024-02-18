@@ -5,6 +5,7 @@ using AccountManagement.Infrastructure.EFCore;
 using ShopManagement.Application.Contracts;
 using ShopManagement.Application.Contracts.Order;
 using ShopManagement.Domain.OrderAgg;
+using WebGrease.Css.Extensions;
 
 namespace ShopManagement.Infrastructure.EFCore.Repository
 {
@@ -32,7 +33,7 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
         public async Task<List<OrderItemViewModel>> GetItems(long orderId)
         {
 
-            var products = _context.Products.Select(x => new { x.Id, x.Name });
+            var products =  _context.Products.Select(x => new { x.Id, x.Name });
             var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
             if (order == null)
                 return new List<OrderItemViewModel>();
@@ -45,7 +46,9 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
                 OrderId = x.OrderId,
                 ProductId = x.ProductId,
                 UnitPrice = x.UnitPrice
-            });
+            }).ToList();
+
+
 
             foreach (var item in items)
             {
