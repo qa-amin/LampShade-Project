@@ -1,6 +1,5 @@
 ﻿using _1_LampshadeQuery.Contracts.Article;
 using _1_LampshadeQuery.Contracts.ArticleCategory;
-using BlogManagement.Application.Contracts.ArticleCategory;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ServiceHost.Controllers
@@ -21,16 +20,16 @@ namespace ServiceHost.Controllers
         
 
         [HttpGet]
-        [Route("Article/index/{id}")]
-        public IActionResult Index(string id)
+        [Route("Article/{id}")]
+        public async Task<IActionResult> Index(string id)
         {
-            var Article = _articleQuery.GetArticleDetails(id);
-            ViewBag.Article = Article;
+            var article = await _articleQuery.GetArticleDetails(id);
+            ViewBag.Article = article;
 
-            var LatestArticles = _articleQuery.LatestArticles();
-            ViewBag.LatestArticles = LatestArticles;
+            var latestArticles = await _articleQuery.LatestArticles();
+            ViewBag.LatestArticles = latestArticles;
 
-            var articleCategories = _articleCategoryQuery.GetArticleCategories();
+            var articleCategories = await _articleCategoryQuery.GetArticleCategories();
             ViewBag.articleCategories = articleCategories;
 
             return View();
