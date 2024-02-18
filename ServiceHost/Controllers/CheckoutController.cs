@@ -3,12 +3,10 @@ using _1_LampShadeQuery.Contracts.Product;
 using Microsoft.AspNetCore.Mvc;
 using Nancy.Json;
 using ShopManagement.Application.Contracts.Order;
-using System.Globalization;
 using _0_Framework.Application.ZarinPal;
 using _1_LampShadeQuery.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using ShopManagement.Application;
-using DocumentFormat.OpenXml.Drawing.Charts;
+
 
 namespace ServiceHost.Controllers
 {
@@ -16,7 +14,7 @@ namespace ServiceHost.Controllers
     public class CheckoutController : Controller
     {
         
-        public Cart Cart;
+        
         public const string CookieName = "cart-items";
         private readonly IAuthHelper _authHelper;
         private readonly ICartService _cartService;
@@ -30,7 +28,7 @@ namespace ServiceHost.Controllers
             IProductQuery productQuery,
             IAuthHelper authHelper, IZarinPalFactory zarinPalFactory, IOrderApplication orderApplication)
         {
-            Cart = new Cart();
+           
             _cartCalculatorService = cartCalculatorService;
             _cartService = cartService;
             _productQuery = productQuery;
@@ -41,8 +39,8 @@ namespace ServiceHost.Controllers
             _orderApplication = orderApplication;
         }
 
-        [Route("/checkout/index")]
-        public IActionResult Index()
+        [Route("/checkout")]
+        public async Task<IActionResult> Index()
         {
             var serializer = new JavaScriptSerializer();
             var value = Request.Cookies[CookieName];
@@ -50,23 +48,23 @@ namespace ServiceHost.Controllers
             foreach (var item in cartItems)
                 item.CalculateTotalItemPrice();
 
-            Cart = _cartCalculatorService.ComputeCart(cartItems);
-            _cartService.Set(Cart);
+            var cart = await _cartCalculatorService.ComputeCart(cartItems);
+            _cartService.Set(cart);
 
-            return View(Cart);
+            return View(cart);
         }
 
 
-        public IActionResult Pay(int paymentMethod)
+        public async Task<IActionResult> Pay(int paymentMethod)
         {
-            var cart = _cartService.Get();
+            var cart =  _cartService.Get();
             cart.SetPaymentMethod(paymentMethod);
-            var result = _productQuery.CheckInventoryStatus(cart.Items);
+            var result = await _productQuery.CheckInventoryStatus(cart.Items);
             if (result.Any(x => !x.IsInStock))
                 return RedirectToAction("Index", "Checkout");
 
 
-            var orderId = _orderApplication.PlaceOrder(cart);
+            var orderId = await _orderApplication.PlaceOrder(cart);
             if (paymentMethod == 1)
             {
                 return RedirectToAction("CallBack", "Checkout", new { oId = orderId });
@@ -80,8 +78,6 @@ namespace ServiceHost.Controllers
                 Response.Cookies.Delete("cart-items");
                 return RedirectToAction("PaymentResult", resultPayment);
             }
-
-
 
 
 
@@ -100,11 +96,11 @@ namespace ServiceHost.Controllers
             
         }
         [Route("Checkout/CallBack")]
-        public IActionResult CallBack(long oId)
+        public async Task<IActionResult> CallBack(long oId)
         {
             var operation = new OperationResult();
             var code = 1212;
-            var issueTrackingNo = _orderApplication.PaymentSucceeded(oId, code);
+            var issueTrackingNo = await _orderApplication.PaymentSucceeded(oId, code);
             var result = new PaymentResult();
             result = result.Succeeded("پرداخت با موفقیت انجام شد.", issueTrackingNo);
             Response.Cookies.Delete("cart-items");
