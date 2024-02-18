@@ -6,10 +6,7 @@ namespace ServiceHost.Controllers
 {
     public class ArticleCategoryController : Controller
     {
-        public ArticleCategoryQueryModel ArticleCategory;
-        public List<ArticleCategoryQueryModel> ArticleCategories;
-        public List<ArticleQueryModel> LatestArticles;
-
+        
         private readonly IArticleQuery _articleQuery;
         private readonly IArticleCategoryQuery _articleCategoryQuery;
 
@@ -19,17 +16,17 @@ namespace ServiceHost.Controllers
             _articleCategoryQuery = articleCategoryQuery;
         }
         [HttpGet]
-        [Route("ArticleCategory/index/{id}")]
-        public IActionResult Index(string id)
+        [Route("ArticleCategory/{id}")]
+        public async Task<IActionResult> Index(string id)
         {
-            LatestArticles = _articleQuery.LatestArticles();
-            ViewBag.LatestArticles = LatestArticles;
+            var latestArticles = await _articleQuery.LatestArticles();
+            ViewBag.LatestArticles = latestArticles;
 
-            ArticleCategory = _articleCategoryQuery.GetArticleCategory(id);
-            ViewBag.ArticleCategory = ArticleCategory;
+            var articleCategory = await _articleCategoryQuery.GetArticleCategory(id);
+            ViewBag.ArticleCategory = articleCategory;
 
-            ArticleCategories = _articleCategoryQuery.GetArticleCategories();
-            ViewBag.ArticleCategories = ArticleCategories;
+            var articleCategories = await _articleCategoryQuery.GetArticleCategories();
+            ViewBag.ArticleCategories = articleCategories;
 
             return View("Index");
         }
