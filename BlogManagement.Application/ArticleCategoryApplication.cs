@@ -1,7 +1,6 @@
 ﻿using _0_Framework.Application;
 using BlogManagement.Application.Contracts.ArticleCategory;
 using BlogManagement.Domain.ArticleCategoryAgg;
-using System.Collections.Generic;
 
 namespace BlogManagement.Application
 {
@@ -16,10 +15,10 @@ namespace BlogManagement.Application
             _articleCategoryRepository = articleCategoryRepository;
         }
 
-        public OperationResult Create(CreateArticleCategory command)
+        public async Task<OperationResult> Create(CreateArticleCategory command)
         {
             var operation = new OperationResult();
-            if (_articleCategoryRepository.Exists(x => x.Name == command.Name))
+            if (await _articleCategoryRepository.Exists(x => x.Name == command.Name))
                 return operation.Failed(ApplicationMessages.DuplicatedRecord);
 
             var slug = command.Slug.Slugify();
@@ -28,20 +27,20 @@ namespace BlogManagement.Application
                 , command.Description, command.ShowOrder, slug, command.Keywords, command.MetaDescription,
                 command.CanonicalAddress);
 
-            _articleCategoryRepository.Create(articleCategory);
-            _articleCategoryRepository.SaveChanges();
+            await _articleCategoryRepository.Create(articleCategory);
+            await _articleCategoryRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public OperationResult Edit(EditArticleCategory command)
+        public async Task<OperationResult> Edit(EditArticleCategory command)
         {
             var operation = new OperationResult();
-            var articleCategory = _articleCategoryRepository.Get(command.Id);
+            var articleCategory = await _articleCategoryRepository.Get(command.Id);
 
             if (articleCategory == null)
                 return operation.Failed(ApplicationMessages.RecordNotFound);
 
-            if (_articleCategoryRepository.Exists(x => x.Name == command.Name && x.Id != command.Id))
+            if ( await _articleCategoryRepository.Exists(x => x.Name == command.Name && x.Id != command.Id))
                 return operation.Failed(ApplicationMessages.DuplicatedRecord);
 
             var slug = command.Slug.Slugify();
@@ -50,23 +49,23 @@ namespace BlogManagement.Application
                 command.Description, command.ShowOrder, slug, command.Keywords, command.MetaDescription,
                 command.CanonicalAddress);
 
-            _articleCategoryRepository.SaveChanges();
+            await _articleCategoryRepository.SaveChanges();
             return operation.Succeeded();
         }
 
-        public List<ArticleCategoryViewModel> GetArticleCategories()
+        public async Task<List<ArticleCategoryViewModel>> GetArticleCategories()
         {
-            return _articleCategoryRepository.GetArticleCategories();
+            return await _articleCategoryRepository.GetArticleCategories();
         }
 
-        public EditArticleCategory GetDetails(long id)
+        public async Task<EditArticleCategory> GetDetails(long id)
         {
-            return _articleCategoryRepository.GetDetails(id);
+            return await _articleCategoryRepository.GetDetails(id);
         }
 
-        public List<ArticleCategoryViewModel> Search(ArticleCategorySearchModel searchModel)
+        public async Task<List<ArticleCategoryViewModel>> Search(ArticleCategorySearchModel searchModel)
         {
-            return _articleCategoryRepository.Search(searchModel);
+            return await _articleCategoryRepository.Search(searchModel);
         }
     }
 
