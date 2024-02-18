@@ -18,12 +18,12 @@ namespace ServiceHost.ViewComponents
         }
 
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> Invoke()
         {
             var menuModel = new MenuModel
             {
-                ProductCategories = _productCategoryQuery.GetProductCategories(),
-                ArticleCategories = _articleCategoryQuery.GetArticleCategories(),
+                ProductCategories = await _productCategoryQuery.GetProductCategories(),
+                ArticleCategories = await _articleCategoryQuery.GetArticleCategories(),
             };
             return View(menuModel);
         }
