@@ -1,7 +1,6 @@
-﻿using System.Data.Entity;
-using _1_LampShadeQuery.Contracts.Slide;
+﻿using _1_LampShadeQuery.Contracts.Slide;
 using ShopManagement.Infrastructure.EFCore;
-
+using Microsoft.EntityFrameworkCore;
 namespace _1_LampShadeQuery.Query
 {
     public class SlideQuery : ISlideQuery
@@ -15,7 +14,9 @@ namespace _1_LampShadeQuery.Query
 
         public async Task<List<SlideQueryModel>> GetSlides()
         {
-            return await _shopManagementDbContext.Slides.Where(x => x.IsRemoved == false).Select(x => new SlideQueryModel
+            var slides = await _shopManagementDbContext.Slides.Where(x => x.IsRemoved == false).ToListAsync();
+
+            return slides.Select(x => new SlideQueryModel
             {
                 BtnText = x.BtnText,
                 Heading = x.Heading,
@@ -27,7 +28,11 @@ namespace _1_LampShadeQuery.Query
                 Text = x.Text,
                 Title = x.Title,
 
-            }).ToListAsync();
+            }).ToList();
+
+            
+
+
         }
     }
 }

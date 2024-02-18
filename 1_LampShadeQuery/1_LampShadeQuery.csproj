@@ -15,5 +15,8 @@
     <ProjectReference Include="..\ShopManagement.Applictation.Contracts\ShopManagement.Application.Contracts.csproj" />
     <ProjectReference Include="..\ShopManagement.Infrastructure.EFCore\ShopManagement.Infrastructure.EFCore.csproj" />
   </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.15" />
+	</ItemGroup>
 
 </Project>
