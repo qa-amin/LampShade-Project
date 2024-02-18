@@ -3,9 +3,6 @@ using _0_Framework.Infrastructure;
 using BlogManagement.Application.Contracts.Article;
 using BlogManagement.Domain.ArticleAgg;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BlogManagement.Infrastructure.EFCore.Repository
 {
@@ -18,9 +15,9 @@ namespace BlogManagement.Infrastructure.EFCore.Repository
             _context = context;
         }
 
-        public EditArticle GetDetails(long id)
+        public async Task<EditArticle> GetDetails(long id)
         {
-            return _context.Articles.Select(x => new EditArticle
+            return await _context.Articles.Select(x => new EditArticle
             {
                 Id = x.Id,
                 CanonicalAddress = x.CanonicalAddress,
@@ -34,15 +31,15 @@ namespace BlogManagement.Infrastructure.EFCore.Repository
                 ShortDescription = x.ShortDescription,
                 Slug = x.Slug,
                 Title = x.Title
-            }).FirstOrDefault(x => x.Id == id);
+            }).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Article GetWithCategory(long id)
+        public async Task<Article> GetWithCategory(long id)
         {
-            return _context.Articles.Include(x => x.Category).FirstOrDefault(x => x.Id == id);
+            return await _context.Articles.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public List<ArticleViewModel> Search(ArticleSearchModel searchModel)
+        public async Task<List<ArticleViewModel>> Search(ArticleSearchModel searchModel)
         {
             var query = _context.Articles.Select(x => new ArticleViewModel
             {
@@ -61,7 +58,7 @@ namespace BlogManagement.Infrastructure.EFCore.Repository
             if (searchModel.CategoryId > 0)
                 query = query.Where(x => x.CategoryId == searchModel.CategoryId);
 
-            return query.OrderByDescending(x => x.Id).ToList();
+            return await query.OrderByDescending(x => x.Id).ToListAsync();
         }
     }
 }
