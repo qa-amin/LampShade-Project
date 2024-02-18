@@ -7,7 +7,6 @@ namespace ServiceHost.Controllers
 {
     public class ProductController : Controller
     {
-        public ProductQueryModel Product;
         private readonly IProductQuery _productQuery;
         private readonly ICommentApplication _commentApplication;
 
@@ -20,16 +19,16 @@ namespace ServiceHost.Controllers
         [Route("product/{id}")]
         public async Task<IActionResult> Index(string id)
         {
-            Product = await _productQuery.GetProductDetails(id);
-            ViewBag.Product = Product;
+            var product = await _productQuery.GetProductDetails(id);
+            ViewBag.Product = product;
             return View();
         }
         [HttpPost]
         [Route("product/add-comment")]
-        public IActionResult Create(AddComment command, string productSlug)
+        public async Task<IActionResult> Create(AddComment command, string productSlug)
         {
             command.Type = CommentType.Product;
-            var result = _commentApplication.Add(command);
+            var result = await _commentApplication.Add(command);
             return RedirectToAction("Index", new { id = productSlug });
         }
     }
