@@ -3,10 +3,7 @@ using BlogManagement.Application.Contracts.ArticleCategory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.VisualBasic.CompilerServices;
-using ShopManagement.Application;
-using ShopManagement.Application.Contracts.Product;
-using ShopManagement.Application.Contracts.ProductCategory;
+
 
 namespace ServiceHost.Areas.Administration.Controllers.Article.Articles
 {
@@ -16,9 +13,6 @@ namespace ServiceHost.Areas.Administration.Controllers.Article.Articles
         private readonly IArticleApplication _articleApplication;
         private readonly IArticleCategoryApplication _articleCategoryApplication;
 
-        private  List<ArticleViewModel> _articleViewModels = new List<ArticleViewModel> ();
-
-        public ArticleSearchModel searchModel;
 
         public ArticleController(IArticleApplication articleApplication, IArticleCategoryApplication articleCategoryApplication)
         {
@@ -28,61 +22,61 @@ namespace ServiceHost.Areas.Administration.Controllers.Article.Articles
 
 
         [Area("Administration")]
-        [Route("admin/article/article/index")]
+        [Route("admin/articles")]
         [HttpGet]
-        public IActionResult Index(string? title, long categoryId)
+        public async Task<IActionResult> Index(string? title, long categoryId)
         {
             var SearchModel = new ArticleSearchModel()
             {
                 Title = title,
                 CategoryId = categoryId
             };
-            _articleViewModels = _articleApplication.Search(SearchModel);
+            var articleViewModels = await _articleApplication.Search(SearchModel);
 
 
-            var articleCategories = new SelectList(_articleCategoryApplication.GetArticleCategories(), "Id", "Name");
+            var articleCategories = new SelectList(await _articleCategoryApplication.GetArticleCategories(), "Id", "Name");
             ViewBag.ArticleCategories = articleCategories;
-            return View(_articleViewModels);
+            return View(articleViewModels);
         }
 
 
         [Area("Administration")]
-        [Route("admin/article/article/Create")]
+        [Route("admin/article/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var command = new CreateArticle();
-            command.ArticleCategories = _articleCategoryApplication.GetArticleCategories();
+            command.ArticleCategories = await _articleCategoryApplication.GetArticleCategories();
             return View("_Create", command);
         }
 
         [Area("Administration")]
-        [Route("admin/article/article/Create")]
+        [Route("admin/article/Create")]
         [HttpPost]
-        public IActionResult Create(CreateArticle commend)
+        public async Task<IActionResult> Create(CreateArticle commend)
         {
-            var result = _articleApplication.Create(commend);
+            var result = await _articleApplication.Create(commend);
 
             return new RedirectResult("./index");
         }
 
 
         [Area("Administration")]
-        [Route("admin/article/article/Edit")]
+        [Route("admin/article/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            var editArticle= _articleApplication.GetDetails(Id);
-            editArticle.ArticleCategories = _articleCategoryApplication.GetArticleCategories();
+            var editArticle=  await _articleApplication.GetDetails(Id);
+            editArticle.ArticleCategories = await _articleCategoryApplication.GetArticleCategories();
             return View("_Edit", editArticle);
         }
 
         [Area("Administration")]
-        [Route("admin/article/article/Edit")]
+        [Route("admin/article/Edit")]
         
-        public IActionResult Edit(EditArticle commend)
+        public async Task<IActionResult> Edit(EditArticle commend)
         {
-            var result = _articleApplication.Edit(commend);
+            var result =  await _articleApplication.Edit(commend);
             return new RedirectResult("./index");
         }
     }

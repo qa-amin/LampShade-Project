@@ -1,8 +1,6 @@
 ﻿using BlogManagement.Application.Contracts.ArticleCategory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic.CompilerServices;
-using ShopManagement.Application.Contracts.ProductCategory;
 
 namespace ServiceHost.Areas.Administration.Controllers.Article.ArticleCategory
 {
@@ -22,53 +20,53 @@ namespace ServiceHost.Areas.Administration.Controllers.Article.ArticleCategory
 
 
         [Area("Administration")]
-        [Route("admin/article/articlecategory/index")]
+        [Route("admin/articlecategories")]
         [HttpGet]
-        public IActionResult Index(string? searchModel)
+        public async Task<IActionResult> Index(string? searchModel)
         {
             var SearchModel = new ArticleCategorySearchModel()
             {
                 Name = searchModel
             };
-            _articleCategoryViewModels = _articleCategoryApplication.Search(SearchModel);
+            _articleCategoryViewModels = await _articleCategoryApplication.Search(SearchModel);
             return View(_articleCategoryViewModels);
         }
 
 
         [Area("Administration")]
-        [Route("admin/article/articlecategory/Create")]
+        [Route("admin/articlecategory/Create")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return PartialView("_Create", new CreateArticleCategory());
         }
 
         [Area("Administration")]
-        [Route("admin/article/articlecategory/Create")]
+        [Route("admin/articlecategory/Create")]
         [HttpPost]
-        public JsonResult Create(CreateArticleCategory commend)
+        public async Task<JsonResult> Create(CreateArticleCategory commend)
         {
-            var result = _articleCategoryApplication.Create(commend);
+            var result = await _articleCategoryApplication.Create(commend);
 
             return new JsonResult(result);
         }
 
 
         [Area("Administration")]
-        [Route("admin/article/articlecategory/Edit")]
+        [Route("admin/articlecategory/Edit")]
         [HttpGet]
-        public IActionResult Edit(long Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            var editArticleCategory = _articleCategoryApplication.GetDetails(Id);
+            var editArticleCategory = await _articleCategoryApplication.GetDetails(Id);
             return PartialView("_Edit", editArticleCategory);
         }
 
         [Area("Administration")]
-        [Route("admin/article/articlecategory/Edit")]
+        [Route("admin/articlecategory/Edit")]
         
-        public JsonResult Edit(EditArticleCategory commend)
+        public async Task<JsonResult> Edit(EditArticleCategory commend)
         {
-            var result = _articleCategoryApplication.Edit(commend);
+            var result = await _articleCategoryApplication.Edit(commend);
             return new JsonResult(result);
         }
     }
