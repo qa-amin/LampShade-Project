@@ -1,5 +1,4 @@
 ﻿using _0_Framework.Application;
-using MailChimp.Net.Models;
 using ShopManagement.Application.Contracts.Product;
 using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Domain.ProductCategoryAgg;
