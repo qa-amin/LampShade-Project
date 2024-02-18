@@ -1,5 +1,4 @@
-﻿using _1_LampShadeQuery.Contracts.Product;
-using _1_LampShadeQuery.Contracts.ProductCategory;
+﻿using _1_LampShadeQuery.Contracts.ProductCategory;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ServiceHost.Controllers
@@ -13,14 +12,11 @@ namespace ServiceHost.Controllers
             _productCategoryQuery = productCategoryQuery;
         }
 
-        private ProductCategoryQueryModel productCategoryQueryModel;
 
-        
-
-        [Route("productcategory/index/{id}")]
-        public IActionResult Index(string id)
+        [Route("productcategory/{id}")]
+        public async Task<IActionResult> Index(string id)
         {
-            productCategoryQueryModel = _productCategoryQuery.GetProductCategoryWithProductsBy(id);
+            var productCategoryQueryModel = await _productCategoryQuery.GetProductCategoryWithProductsBy(id);
 
             return View(productCategoryQueryModel);
         }
