@@ -13,7 +13,7 @@ namespace ServiceHost.ViewComponents
             _slideQuery = slideQuery;
         }
 
-        public async Task<IViewComponentResult> InvokeTask()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var slides = await _slideQuery.GetSlides();
 

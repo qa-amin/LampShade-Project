@@ -12,9 +12,9 @@ namespace ServiceHost.ViewComponents
 			_productCategoryQuery = productCategoryQuery;
 		}
 
-		public IViewComponentResult Invoke()
+		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			var categories = _productCategoryQuery.GetProductCategoriesWithProducts();
+			var categories = await _productCategoryQuery.GetProductCategoriesWithProducts();
 			return View(categories);
 		}
 	}

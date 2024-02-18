@@ -18,7 +18,7 @@ namespace ServiceHost.ViewComponents
         }
 
 
-        public async Task<IViewComponentResult> Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var menuModel = new MenuModel
             {
