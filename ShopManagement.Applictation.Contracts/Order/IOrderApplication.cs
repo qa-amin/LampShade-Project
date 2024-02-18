@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace ShopManagement.Application.Contracts.Order
+﻿namespace ShopManagement.Application.Contracts.Order
 {
     public interface IOrderApplication
     {
-        long PlaceOrder(Cart cart);
-        double GetAmountBy(long id);
-        void Cancel(long id);
-        string PaymentSucceeded(long orderId, long refId);
-        List<OrderItemViewModel> GetItems(long orderId);
-        List<OrderViewModel> Search(OrderSearchModel searchModel);
+        Task<long> PlaceOrder(Cart cart);
+        Task<double> GetAmountBy(long id);
+        Task Cancel(long id);
+        Task<string> PaymentSucceeded(long orderId, long refId);
+        Task<List<OrderItemViewModel>> GetItems(long orderId);
+        Task<List<OrderViewModel>> Search(OrderSearchModel searchModel);
     }
 }
