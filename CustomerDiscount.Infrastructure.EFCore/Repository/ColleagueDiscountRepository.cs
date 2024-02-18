@@ -18,7 +18,7 @@ namespace DiscountManagement.Infrastructure.EFCore.Repository
             _shopContext = shopContext;
         }
 
-        public async Task<List<ColleagueDiscountViewModel>> Search(long id)
+        public async Task<List<ColleagueDiscountViewModel>> Search(long? id)
         {
             var products = await _shopContext.Products.Select(x => new { x.Id, x.Name }).ToListAsync();
             var query = await _context.ColleagueDiscounts.Select(x => new ColleagueDiscountViewModel
