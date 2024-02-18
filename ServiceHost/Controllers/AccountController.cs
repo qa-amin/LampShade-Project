@@ -15,8 +15,7 @@ namespace ServiceHost.Controllers
         public string RegisterMessage { get; set; }
         public AccountController(IAccountApplication accountApplication)
         {
-            ViewBag.LoginMessage = LoginMessage;
-            ViewBag.RegisterMessage = RegisterMessage;
+           
             _accountApplication = accountApplication;
         }
 
@@ -26,14 +25,14 @@ namespace ServiceHost.Controllers
             return View();
         }
         [Route("account/login")]
-        public IActionResult Login(string username, string password)
+        public async Task<IActionResult> Login(string username, string password)
         {
             var command = new Login
             {
                 Password = password,
                 Username = username,
             };
-            var result = _accountApplication.Login(command);
+            var result = await _accountApplication.Login(command);
             if (result.IsSucceeded)
                 return RedirectToAction("Index","Home");
 
@@ -43,18 +42,18 @@ namespace ServiceHost.Controllers
 
 
         [Route("account/logout")]
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
             
-            _accountApplication.Logout();
+            await _accountApplication.Logout();
 
             return RedirectToAction("Index", "Home");
         }
 
         [Route("account/Register")]
-        public IActionResult Register(RegisterAccount command)
+        public async Task<IActionResult> Register(RegisterAccount command)
         {
-           var result = _accountApplication.Register(command);
+           var result = await _accountApplication.Register(command);
            if (result.IsSucceeded)
                return RedirectToAction("Login");
 
