@@ -1,10 +1,8 @@
-﻿using _0_Framework.Application;
+﻿using System.Data.Entity;
+using _0_Framework.Application;
 using _0_Framework.Infrastructure;
 using CommentManagement.Application.Contracts.Comment;
 using CommentManagement.Domain.CommentAgg;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace CommentManagement.Infrastructure.EFCore.Repository
 {
@@ -18,7 +16,7 @@ namespace CommentManagement.Infrastructure.EFCore.Repository
         }
 
 
-        public List<CommentViewModel> Search(CommentSearchModel searchModel)
+        public async Task<List<CommentViewModel>> Search(CommentSearchModel searchModel)
         {
             var query = _commentManagementDbContext.Comments
                 .Select(x => new CommentViewModel
@@ -41,7 +39,7 @@ namespace CommentManagement.Infrastructure.EFCore.Repository
             if (!string.IsNullOrWhiteSpace(searchModel.Email))
                 query = query.Where(x => x.Email.Contains(searchModel.Email));
 
-            return query.OrderByDescending(x => x.Id).ToList();
+            return await query.OrderByDescending(x => x.Id).ToListAsync();
         }
     }
 }
