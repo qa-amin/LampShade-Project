@@ -1,13 +1,10 @@
 ﻿using _0_Framework.Application;
 using _1_LampshadeQuery.Contracts.Article;
 using _1_LampshadeQuery.Contracts.ArticleCategory;
-using BlogManagement.Application.Contracts.Article;
 using BlogManagement.Domain.ArticleAgg;
 using BlogManagement.Infrastructure.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace _1_LampshadeQuery.Query
 {
@@ -20,9 +17,9 @@ namespace _1_LampshadeQuery.Query
             _blogManagementDbContext = blogManagementDbContext;
         }
 
-        public List<ArticleCategoryQueryModel> GetArticleCategories()
+        public async Task<List<ArticleCategoryQueryModel>> GetArticleCategories()
         {
-            return _blogManagementDbContext.ArticleCategories
+            return await _blogManagementDbContext.ArticleCategories
                 .Include(x => x.Articles)
                 .Select(x => new ArticleCategoryQueryModel
                 {
@@ -32,12 +29,12 @@ namespace _1_LampshadeQuery.Query
                     PictureTitle = x.PictureTitle,
                     Slug = x.Slug,
                     ArticlesCount = x.Articles.Count
-                }).ToList();
+                }).ToListAsync();
         }
 
-        public ArticleCategoryQueryModel GetArticleCategory(string slug)
+        public async Task<ArticleCategoryQueryModel> GetArticleCategory(string slug)
         {
-            var articleCategory = _blogManagementDbContext.ArticleCategories
+            var articleCategory = await _blogManagementDbContext.ArticleCategories
                 .Include(x => x.Articles)
                 .Select(x => new ArticleCategoryQueryModel
                 {
@@ -52,7 +49,7 @@ namespace _1_LampshadeQuery.Query
                     CanonicalAddress = x.CanonicalAddress,
                     ArticlesCount = x.Articles.Count,
                     Articles = MapArticles(x.Articles)
-                }).FirstOrDefault(x => x.Slug == slug);
+                }).FirstOrDefaultAsync(x => x.Slug == slug);
 
             if (!string.IsNullOrWhiteSpace(articleCategory.Keywords))
                 articleCategory.KeywordList = articleCategory.Keywords.Split(",").ToList();

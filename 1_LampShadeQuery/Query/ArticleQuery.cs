@@ -1,10 +1,5 @@
 ﻿using _0_Framework.Application;
-
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using _1_LampshadeQuery.Contracts.Article;
 using BlogManagement.Infrastructure.EFCore;
 
@@ -20,9 +15,9 @@ namespace _1_LampshadeQuery.Query
         }
 
 
-        public ArticleQueryModel GetArticleDetails(string slug)
+        public async Task<ArticleQueryModel> GetArticleDetails(string slug)
         {
-            var article = _blogManagementDbContext.Articles
+            var article = await _blogManagementDbContext.Articles
                .Include(x => x.Category)
                .Where(x => x.PublishDate <= DateTime.Now)
                .Select(x => new ArticleQueryModel
@@ -41,22 +36,17 @@ namespace _1_LampshadeQuery.Query
                    PictureTitle = x.PictureTitle,
                    PublishDate = x.PublishDate.ToFarsi(),
                    ShortDescription = x.ShortDescription,
-               }).FirstOrDefault(x => x.Slug == slug);
+               }).FirstOrDefaultAsync(x => x.Slug == slug);
 
             if (!string.IsNullOrWhiteSpace(article.Keywords))
                 article.KeywordList = article.Keywords.Split(",").ToList();
 
-
-            
-
-          
-
             return article;
         }
 
-        public List<ArticleQueryModel> LatestArticles()
+        public async Task<List<ArticleQueryModel>> LatestArticles()
         {
-            return _blogManagementDbContext.Articles
+            return await _blogManagementDbContext.Articles
                 .Include(x => x.Category)
                 .Where(x => x.PublishDate <= DateTime.Now)
                 .Select(x => new ArticleQueryModel
@@ -68,7 +58,7 @@ namespace _1_LampshadeQuery.Query
                     PictureTitle = x.PictureTitle,
                     PublishDate = x.PublishDate.ToFarsi(),
                     ShortDescription = x.ShortDescription,
-                }).ToList();
+                }).ToListAsync();
         }
     }
 }
