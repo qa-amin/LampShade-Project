@@ -18,26 +18,26 @@ namespace ServiceHost.Areas.Administration.Controllers.Comment.Comment
         }
 
         [Area("Administration")]
-        [Route("admin/comment/comment/index")]
+        [Route("admin/comments")]
         [HttpGet]
-        public IActionResult Index(string? Name, string? Email)
+        public async Task<IActionResult> Index(string? Name, string? Email)
         {
             var searchComment = new CommentSearchModel
             {
                 Name = Name,
                 Email = Email
             };
-           var Comments = _commentApplication.Search(searchComment);
+           var Comments = await _commentApplication.Search(searchComment);
 
             return View(Comments);
         }
 
         [Area("Administration")]
-        [Route("admin/comment/comment/Confirm")]
+        [Route("admin/comment/Confirm")]
         [HttpGet]
-        public IActionResult Confirm(long id)
+        public async Task<IActionResult> Confirm(long id)
         {
-            var result = _commentApplication.Confirm(id);
+            var result = await _commentApplication.Confirm(id);
             if (result.IsSucceeded)
                 return new RedirectResult("./index");
 
@@ -47,11 +47,11 @@ namespace ServiceHost.Areas.Administration.Controllers.Comment.Comment
             
         }
         [Area("Administration")]
-        [Route("admin/comment/comment/Cancel")]
+        [Route("admin/comment/Cancel")]
         [HttpGet]
-        public IActionResult Cancel(long id)
+        public async Task<IActionResult> Cancel(long id)
         {
-            var result = _commentApplication.Cancel(id);
+            var result = await _commentApplication.Cancel(id);
             if (result.IsSucceeded)
                 return new RedirectResult("./index");
 
