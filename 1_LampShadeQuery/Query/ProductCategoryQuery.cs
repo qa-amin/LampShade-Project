@@ -103,7 +103,7 @@ namespace _1_LampShadeQuery.Query
             var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate , x.EndDate}).ToListAsync();
 
 
-            var category = _shopManagementDbContext.ProductCategories.Include(x => x.Products)
+            var category = await _shopManagementDbContext.ProductCategories.Include(x => x.Products)
                 .ThenInclude(x => x.Category)
                 .Select(x => new ProductCategoryQueryModel
                 {
@@ -121,7 +121,7 @@ namespace _1_LampShadeQuery.Query
 
 
 
-                }).FirstOrDefault(x => x.Slug == slug);
+                }).FirstOrDefaultAsync(x => x.Slug == slug);
 
             
             
