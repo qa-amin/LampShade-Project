@@ -62,6 +62,7 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
 
         public async Task<List<OrderViewModel>> Search(long ?accountId, bool? isCanceled)
         {
+            //var accounts = await _accountContext.Accounts.Select(x => new { x.Id, x.Fullname }).ToListAsync();
             var accounts =  _accountContext.Accounts.Select(x => new { x.Id, x.Fullname });
             var query = _context.Orders.Select(x => new OrderViewModel
             {
@@ -82,14 +83,18 @@ namespace ShopManagement.Infrastructure.EFCore.Repository
 
             if (accountId > 0) query = query.Where(x => x.AccountId == accountId);
 
-            var orders = query.OrderByDescending(x => x.Id);
+            var orders = await query.OrderByDescending(x => x.Id).ToListAsync();
             foreach (var order in orders)
             {
-                order.AccountFullName = accounts.FirstOrDefault(x => x.Id == order.AccountId)?.Fullname;
-                order.PaymentMethod = PaymentMethod.GetBy(order.PaymentMethodId).Name;
+	            var account =
+		             await accounts.FirstOrDefaultAsync(x => x.Id == order.AccountId);
+
+	            order.AccountFullName = account.Fullname;
+
+				order.PaymentMethod = PaymentMethod.GetBy(order.PaymentMethodId).Name;
             }
 
-            return await orders.ToListAsync();
+            return orders;
         }
     }
 }
