@@ -15,9 +15,10 @@ namespace ServiceHost.Controllers
         public async Task<IActionResult> Index(string id)
         {
             var products = await _productQuery.Search(id);
-            ViewBag.Products = products;
+            
             ViewBag.Search = id;
-            return View();
+
+            return View(products);
         }
 
       

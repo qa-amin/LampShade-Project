@@ -1,8 +1,7 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "نتیجه جستجو";
 }
-
+@model List<_1_LampShadeQuery.Contracts.Product.ProductQueryModel>
 <div class="breadcrumb-area section-space--half">
     <div class="container wide">
         <div class="row">
@@ -62,7 +61,7 @@
                             <div class="col-lg-12">
                                 <div class="shop-page-content">
                                     <div class="row shop-product-wrap grid three-column">
-                                        @foreach (var product in ViewBag.Products )
+                                        @foreach (var product in Model )
                                         {
                                             <div class="col-12 col-lg-4 col-md-4 col-sm-6">
                                                 <div class="single-grid-product grid-view-product">
@@ -73,7 +72,7 @@
                                                                 <span class="sale">-@product.DiscountRate%</span>
                                                             </div>
                                                         }
-                                                        <a asp-controller="Account" asp-action="Index" asp-route-id="@product.Slug">
+                                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Slug">
                                                             <img src="~/ProductPictures/@product.Picture" class="img-fluid"
                                                                  alt="@product.PictureAlt" title="@product.PictureTitle">
                                                         </a>
@@ -93,7 +92,7 @@
                                                         </div>
 
                                                         <h3 class="single-grid-product__title">
-                                                            <a asp-controller="Account" asp-action="Index" asp-route-id="@product.Slug">@product.Name</a>
+                                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Slug">@product.Name</a>
                                                         </h3>
                                                         <p class="single-grid-product__price">
                                                             @if (product.HasDiscount)
