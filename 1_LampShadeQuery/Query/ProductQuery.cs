@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using _0_Framework.Application;
+﻿using _0_Framework.Application;
 using _1_LampShadeQuery.Contracts.Comment;
 using _1_LampShadeQuery.Contracts.Product;
-using _1_LampShadeQuery.Contracts.ProductCategory;
 using CommentManagement.Infrastructure.EFCore;
 using DiscountManagement.Infrastructure.EFCore;
 using InventoryManagement.Infrastructure.EFCore;
 using Microsoft.EntityFrameworkCore;
 using ShopManagement.Application.Contracts.Order;
-using ShopManagement.Domain.ProductAgg;
 using ShopManagement.Domain.ProductPictureAgg;
 using ShopManagement.Infrastructure.EFCore;
 
@@ -163,19 +156,22 @@ namespace _1_LampShadeQuery.Query
 
         public async Task<ProductQueryModel> GetProductDetails(string slug)
         {
-            var products = await _shopManagementDbContext.Products
-                .Include(x => x.Category)
-                .Include(x => x.ProductPictures)
-                .ToListAsync();
+	        var products = _shopManagementDbContext.Products
+		        .Include(x => x.Category)
+		        .Include(x => x.ProductPictures);
 
-            
-            
 
-            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice, x.InStock }).ToListAsync();
 
-            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToListAsync();
 
-            var product = products.Select(x => new ProductQueryModel
+
+	        var inventories =
+		        _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice, x.InStock });
+
+	        var discounts =  _discountManagementDbContext.CustomerDiscounts
+		        .Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now)
+		        .Select(x => new { x.ProductId, x.DiscountRate, x.EndDate });
+
+            var product = await products.Select(x => new ProductQueryModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -192,25 +188,22 @@ namespace _1_LampShadeQuery.Query
                 ShortDescription = x.ShortDescription,
                 Pictures = MapProductPictures(x.ProductPictures),
                 
-                
-                
 
-
-            }).FirstOrDefault(x => x.Slug == slug);
+            }).FirstOrDefaultAsync(x => x.Slug == slug);
 
             if (product == null)
                 return new ProductQueryModel();
 
             
             
-                var inventory = inventories.FirstOrDefault(x => x.ProductId == product.Id);
+                var inventory = await inventories.FirstOrDefaultAsync(x => x.ProductId == product.Id);
                 if (inventory != null)
                 {
                     product.IsInStock = inventory.InStock;
                     var price = inventory.UnitPrice;
                     product.Price = price.ToMoney();
                     product.DoublePrice = price;
-                    var discount = discounts.FirstOrDefault(x => x.ProductId == product.Id);
+                    var discount = await discounts.FirstOrDefaultAsync(x => x.ProductId == product.Id);
                     if (discount != null)
                     {
                         int discountRate = discount.DiscountRate;
