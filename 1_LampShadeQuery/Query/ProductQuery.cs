@@ -93,12 +93,15 @@ namespace _1_LampShadeQuery.Query
 
         public async Task<List<ProductQueryModel>> Search(string value)
         {
-            var inventories = await _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice }).ToListAsync();
+	        var inventories =
+		         _inventoryManagementDbContext.Inventory.Select(x => new { x.ProductId, x.UnitPrice });
 
-            var discounts = await _discountManagementDbContext.CustomerDiscounts.Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now).Select(x => new { x.ProductId, x.DiscountRate, x.EndDate }).ToListAsync();
+	        var discounts =  _discountManagementDbContext.CustomerDiscounts
+		        .Where(x => x.StartDate < DateTime.Now && x.EndDate > DateTime.Now)
+		        .Select(x => new { x.ProductId, x.DiscountRate, x.EndDate });
 
 
-            var query = await _shopManagementDbContext.Products.Include(x => x.Category)
+            var query =  _shopManagementDbContext.Products.Include(x => x.Category)
 
                 .Select(x => new ProductQueryModel()
                 {
@@ -114,25 +117,25 @@ namespace _1_LampShadeQuery.Query
 
 
 
-                }).AsNoTracking().ToListAsync();
+                }).AsNoTracking();
 
 
             if (!string.IsNullOrWhiteSpace(value))
             {
-                query = query.Where(x => x.Name.Contains(value) || x.ShortDescription.Contains(value)).ToList();
+	            query = query.Where(x => x.Name.Contains(value) || x.ShortDescription.Contains(value));
             }
 
-            var products = query.OrderByDescending(x => x.Id).ToList();
+            var products = await query.OrderByDescending(x => x.Id).ToListAsync();
 
 
             foreach (var product in products)
             {
-                var inventory = inventories.FirstOrDefault(x => x.ProductId == product.Id);
+                var inventory = await inventories.FirstOrDefaultAsync(x => x.ProductId == product.Id);
                 if (inventory != null)
                 {
                     var price = inventory.UnitPrice;
                     product.Price = price.ToMoney();
-                    var discount = discounts.FirstOrDefault(x => x.ProductId == product.Id);
+                    var discount = await discounts.FirstOrDefaultAsync(x => x.ProductId == product.Id);
                     if (discount != null)
                     {
                         int discountRate = discount.DiscountRate;
