@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Administration\Data\" />
+    <Folder Include="Areas\Administration\Models\" />
+    <Folder Include="wwwroot\AdminTheme\ProductPictures\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Theme\assets\fonts\fontawesome-webfont3e6e.svg" />
+    <None Include="wwwroot\Theme\assets\fonts\fontawesome-webfont3e6e.woff2" />
+    <None Include="wwwroot\Theme\assets\fonts\ionicons28b5.svg" />
+    <None Include="wwwroot\Theme\assets\js\active.js" />
+    <None Include="wwwroot\Theme\assets\js\ajax-mail.js" />
+    <None Include="wwwroot\Theme\assets\js\vendors.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
+    <PackageReference Include="Nancy" Version="2.0.0" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\0_Framework\0_Framework.csproj" />
+    <ProjectReference Include="..\AccountManagement\AM.Infrastructure\AccountManagement.Infrastructure.Configuration\AccountManagement.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\BlogManagement\BM.Infrastructure\BlogManagement.Infrastructure.Configuration\BlogManagement.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\CommentManagement\CM.Infrastructure\CommentManagement.Infrastructure.Configuration\CommentManagement.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\DiscountManagement\DM.Application\DiscountManagement.Application.Contracts\DiscountManagement.Application.Contracts.csproj" />
+    <ProjectReference Include="..\DiscountManagement\DM.Infrastructure\CustomerDiscount.Infrastructure.Configuration\DiscountManagement.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\InventoryManagement\IM.Infrastructure\InventoryManagement.Infrastructure.Configuration\InventoryManagement.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\ShopManagement\SM.Infrastructure\ShopManagement.Infrastructure.Configuration\ShopManagement.Infrastructure.Configuration.csproj" />
+  </ItemGroup>
+
+</Project>

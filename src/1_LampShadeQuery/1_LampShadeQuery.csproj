@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>_1_LampShadeQuery</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.15" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\BlogManagement\BM.Infrastructure\BlogManagement.Infrastructure.EFCore\BlogManagement.Infrastructure.EFCore.csproj" />
+	  <ProjectReference Include="..\CommentManagement\CM.Infrastructure\CommentManagement.Infrastructure.EFCore\CommentManagement.Infrastructure.EFCore.csproj" />
+	  <ProjectReference Include="..\DiscountManagement\DM.Infrastructure\CustomerDiscount.Infrastructure.EFCore\DiscountManagement.Infrastructure.EFCore.csproj" />
+	  <ProjectReference Include="..\InventoryManagement\IM.Infrastructure\InventoryManagement.Infrastructure.EFCore\InventoryManagement.Infrastructure.EFCore.csproj" />
+	  <ProjectReference Include="..\ShopManagement\SM.Application\ShopManagement.Applictation.Contracts\ShopManagement.Application.Contracts.csproj" />
+	  <ProjectReference Include="..\ShopManagement\SM.Infrastructure\ShopManagement.Infrastructure.EFCore\ShopManagement.Infrastructure.EFCore.csproj" />
+	</ItemGroup>
+
+</Project>

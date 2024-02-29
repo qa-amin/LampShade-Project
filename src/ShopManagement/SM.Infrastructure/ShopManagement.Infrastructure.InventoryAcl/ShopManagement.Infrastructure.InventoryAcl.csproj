@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\InventoryManagement\IM.Application\InventoryManagement.Application.Contracts\InventoryManagement.Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\SM.Domain\ShopManagment.Domain\ShopManagement.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
