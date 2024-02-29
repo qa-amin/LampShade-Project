@@ -1,4 +1,5 @@
 ﻿using AccountManagement.Application.Contracts.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopManagement.Application.Contracts.Order;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
@@ -6,7 +7,7 @@ using Controller = Microsoft.AspNetCore.Mvc.Controller;
 
 namespace ServiceHost.Areas.Administration.Controllers.Shop.Order
 {
-    
+    [Authorize(Policy = "Administration")]
     public class OrderController : Controller
     {
         private readonly IOrderApplication _orderApplication;
