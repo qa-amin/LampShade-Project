@@ -37,7 +37,7 @@ namespace ServiceHost.Controllers
                 return RedirectToAction("Index","Home");
 
             ViewBag.LoginMessage = result.Message;
-            return RedirectToAction("Index");
+            return View("Index");
         }
 
 
@@ -59,7 +59,7 @@ namespace ServiceHost.Controllers
 
            ViewBag.RegisterMessage = result.Message;
 
-           return RedirectToAction("Index");
+           return View("Index");
         }
 
     }
