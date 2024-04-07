@@ -3,7 +3,7 @@ using ShopManagement.Domain.ProductCategoryAgg;
 
 namespace ShopManagment.Domain.Tests.Unit.ProductCategoryAgg
 {
-    internal class ProductCategoryBuilder
+    public class ProductCategoryBuilder
     {
         public string Name { get; private set; } = "Book";
         public string Description { get; private set; } = "This is a good picture";
