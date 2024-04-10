@@ -128,13 +128,13 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
         {
             //Arrange
             var productCategory = _productCategoryBuilder.Build();
-
+            const string searchModel = "Book";
 
             //Act
             await _productCategoryRepository.Create(productCategory);
             await _productCategoryRepository.SaveChanges();
 
-            var productCategoryWithSearch = await _productCategoryRepository.Search("Book");
+            var productCategoryWithSearch = await _productCategoryRepository.Search(searchModel);
 
             //Assert
             productCategoryWithSearch.Count.Should().Be(1);
@@ -147,6 +147,7 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
             //Arrange
             var productCategory1 = _productCategoryBuilder.Build();
             var productCategory2 = _productCategoryBuilder.Build();
+            const string searchModel = "Book";
 
 
             //Act
@@ -154,7 +155,7 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
             await _productCategoryRepository.Create(productCategory2);
             await _productCategoryRepository.SaveChanges();
 
-            var productCategoryWithSearch = await _productCategoryRepository.Search("Book");
+            var productCategoryWithSearch = await _productCategoryRepository.Search(searchModel);
 
             //Assert
             productCategoryWithSearch.Count.Should().Be(2);
@@ -167,6 +168,7 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
             //Arrange
             var productCategory1 = _productCategoryBuilder.Build();
             var productCategory2 = _productCategoryBuilder.Build();
+            const string searchModel = "Pen";
 
 
             //Act
@@ -174,7 +176,7 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
             await _productCategoryRepository.Create(productCategory2);
             await _productCategoryRepository.SaveChanges();
 
-            var productCategoryWithSearch = await _productCategoryRepository.Search("Pen");
+            var productCategoryWithSearch = await _productCategoryRepository.Search(searchModel);
 
             //Assert
             productCategoryWithSearch.Count.Should().Be(0);
