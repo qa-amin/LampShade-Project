@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using ShopManagement.Infrastructure.EFCore;
 using ShopManagement.Infrastructure.EFCore.Repository;
 using ShopManagment.Domain.Tests.Unit.ProductCategoryAgg;
@@ -9,6 +10,8 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
     public class ProductCategoryRepositoryTest
     {
         private readonly ShopManagementDbContext _context;
+        private readonly ProductCategoryRepository _productCategoryRepository;
+        private readonly ProductCategoryBuilder _productCategoryBuilder;
 
         public ProductCategoryRepositoryTest()
         {
@@ -18,6 +21,8 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
                         Guid.NewGuid().ToString() // Use GUID so every test will use a different db
                     );
             _context = new ShopManagementDbContext(dbOptions.Options);
+            _productCategoryRepository = new ProductCategoryRepository(_context);
+            _productCategoryBuilder = new ProductCategoryBuilder();
 
         }
 
@@ -25,17 +30,16 @@ namespace ShopManagment.Infrastructure.Tests.Unit.Repositories
         [Fact]
         public async Task Create_ShouldAddProductCategoryToDb()
         {
-            var productCategoryBuilder = new ProductCategoryBuilder();
+            //Arrange
+            var productCategory = _productCategoryBuilder.Build();
 
-            var productCategory = productCategoryBuilder.Build();
-
-            var productCategoryRepository = new ProductCategoryRepository(_context);
-
-            await productCategoryRepository.Create(productCategory);
-            await productCategoryRepository.SaveChanges();
-
+            
+            //Act
+            await _productCategoryRepository.Create(productCategory);
+            await _productCategoryRepository.SaveChanges();
             var productCategoryDb = await _context.ProductCategories.FirstOrDefaultAsync();
 
+            //Assert
             productCategory.Id.Should().Be(productCategoryDb.Id);
             
 
