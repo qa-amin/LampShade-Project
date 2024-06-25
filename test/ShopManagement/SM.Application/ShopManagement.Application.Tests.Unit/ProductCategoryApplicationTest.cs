@@ -116,6 +116,9 @@ namespace ShopManagement.Application.Tests.Unit
             var editProductCategory = _editProductCategoryBuilder.Build();
             var operation = new OperationResult();
 
+            _productCategoryRepository.Get(Arg.Any<long>())
+                .Returns(_productCategoryBuilder.Build());
+
             _productCategoryRepository
                 .Exists(Arg.Any<Expression<Func<ProductCategory, bool>>>())
                 .Returns(true);
@@ -130,6 +133,29 @@ namespace ShopManagement.Application.Tests.Unit
 
 
         }
+
+        [Fact]
+        public async Task Edit_ShouldReturnFalseOperationResult_WhenProductCategoryIsNull()
+        {
+            //Arrange
+            var editProductCategory = _editProductCategoryBuilder.Build();
+            var operation = new OperationResult();
+
+            _productCategoryRepository
+                .Exists(Arg.Any<Expression<Func<ProductCategory, bool>>>())
+                .Returns(false);
+
+
+            //Act
+
+            operation = await _productCategoryApplication.Edit(editProductCategory);
+
+            //Assert
+            operation.IsSucceeded.Should().BeFalse();
+
+
+        }
+
 
         [Fact]
         public async Task GetProductCategories_ShouldReturnListOfProductCategoryViewModel()
