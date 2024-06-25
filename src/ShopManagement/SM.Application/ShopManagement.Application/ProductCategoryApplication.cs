@@ -52,7 +52,7 @@ namespace ShopManagement.Application
 
 			if (await _productCategoryRepository.Exists(x => x.Name == command.Name && x.Id != command.Id))
 			{
-                return operation.Failed(ApplicationMessages.RecordNotFound);
+                return operation.Failed(ApplicationMessages.DuplicatedRecord);
             }
 
 
